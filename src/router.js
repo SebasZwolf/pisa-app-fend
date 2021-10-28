@@ -6,6 +6,8 @@ import Login from "@/components/Login";
 import Register from "@/components/Register";
 import StudentHome from "@/components/StudentHome";
 import TeacherHome from "@/components/TeacherHome";
+import Organization from "@/components/Organization";
+import EditOrganization from "@/components/EditOrganization";
 
 Vue.use(VueRouter)
 
@@ -16,6 +18,8 @@ const routes = [
     { path: "/register", name: 'register', component: Register},
     { path: "/teacher", name: 'teacher-home', component: TeacherHome },
     { path: "/student", name: 'student-home', component: StudentHome },
+    { path: "/organization", name: 'organization', component: Organization },
+    { path: "/organization/edit", name: 'edit-organization', component: EditOrganization },
 ]
 
 const router = new VueRouter({

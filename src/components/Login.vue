@@ -26,7 +26,7 @@
               </div>
               <div class="mb-6">
                 <label for="password" class="block mb-2 text-sm text-gray-600">Contraseña</label>
-                <ValidationProvider name="contraseña" rules="required|min:5" v-slot="{ errors }">
+                <ValidationProvider name="contraseña" rules="required" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
                       <i class="fas fa-key"></i>
@@ -36,7 +36,7 @@
                     />
                   </span>
                   <div class="text-md">
-                    <span v-for="(error, index) of errors" v-bind:key="index">{{ error }}</span> 
+                    <span>{{ errors[0] }}</span>
                   </div>
                 </ValidationProvider>
               </div>
@@ -62,7 +62,7 @@
 
 <script>
   import AuthService from '../services/AuthService';
-  import ProfileService from '../services/ProfileService';
+  import UserService from "@/services/UserService";
   import { ValidationProvider, ValidationObserver } from 'vee-validate';
   import jwtDecode from 'jwt-decode';
 
@@ -88,10 +88,20 @@
       login() {
         AuthService.login(this.userData).then((response) => {
           const decodedToken = jwtDecode(response.data.token);
-          this.$store.dispatch('setToken', response.data.token);
-          this.$store.dispatch('setUserId', decodedToken.userId);
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('userId', decodedToken.userId);
+          this.$store.dispatch('setToken');
+          this.$store.dispatch('setUserId');
           this.getUserInfo();
-          this.$swal('Inicio de sesión correcto', '', 'success').then(() => {
+          this.$swal({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: false,
+            icon: 'success',
+            title: 'Inicio de sesión correcto'
+          }).then(() => {
             switch (this.$store.getters.getUserRole) {
               case 'student':
                 this.$router.push('student');
@@ -104,17 +114,18 @@
             }
           });
         }).catch((error) => {
-          if (error.response.status == 401) {
+          if (error.response.status === 401) {
             this.$swal('Contraseña incorrecta', '', 'warning');
           }
-          if (error.response.status == 404) {
+          if (error.response.status === 404) {
             this.$swal('El usuario no existe', '', 'warning');
           }
         });
       },
       getUserInfo() {
-        ProfileService.getUserById(this.$store.getters.getUserId).then((reponse) => {
-          this.$store.dispatch('setUserRole', reponse.data.role);
+        UserService.getUserById(this.$store.getters.getUserId).then((response) => {
+          sessionStorage.setItem('userRole', response.data.role);
+          this.$store.dispatch('setUserRole');
         }).catch((error) => {
           this.$swal('Error del servicio', error, 'error');
         });

@@ -18,15 +18,21 @@ module.exports = {
       red: colors.rose,
       yellow: colors.amber,
       orange: {
-        light: '#FF8844',
+        light: '#FFAA88',
         DEFAULT: '#FF8844',
-        dark: '#FF8844'
+        dark: '#FF8844',
+      },
+      brown: {
+        light: '#663300',
+        DEFAULT: '#663300',
+        dark: '#663300',
       }
     }
   },
   variants: {
     extend: {
       boxShadow: ['responsive', 'hover', 'focus'],
+      tableLayout: ['hover', 'focus'],
     },
   },
   plugins: [

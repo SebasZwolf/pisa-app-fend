@@ -1,15 +1,15 @@
 <template>
   <div class="flex items-center min-h-screen bg-gray-100">
     <div class="container mx-auto">
-      <div class="max-w-sm mx-auto my-10 bg-white border-2 border-orange shadow-2xl">
+      <div class="max-w-sm md:max-w-lg mx-auto my-10 bg-white border-2 border-orange shadow-2xl">
         <div class="text-center py-2 text-black-400 bg-orange">
           Registro de cuenta
         </div>
         <div class="m-3">
           <ValidationObserver v-slot="{ invalid }">
-            <form @submit.prevent="register">
+            <form @submit.prevent="register" class="grid grid-cols-1 md:grid-cols-2 md:gap-1.5">
               <div class="mb-6"> <!-- username -->
-                <label for="username" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Usuario</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Usuario</label>
                 <ValidationProvider name="usuario" rules="required" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
@@ -25,14 +25,14 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6"> <!-- first name -->
-                <label for="firstName" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Nombre</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Nombre</label>
                 <ValidationProvider name="nombre" rules="required|alpha" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
                       <i class="far fa-user"></i>
                     </div>
                     <input type="text" name="firstName" required v-model="newUser.firstName"
-                      class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                           class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                     />
                   </span>
                   <div class="text-md">
@@ -41,7 +41,7 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6"> <!-- last name -->
-                <label for="lastName" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Apellidos</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Apellidos</label>
                 <ValidationProvider name="apellidos" rules="required|alpha" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
@@ -57,7 +57,7 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6"> <!-- email -->
-                <label for="email" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Correo electrónico</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Correo electrónico</label>
                 <ValidationProvider name="correo electrónico" rules="required|email" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
@@ -73,7 +73,7 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6"> <!-- password -->
-                <label for="password" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Contraseña</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Contraseña</label>
                 <ValidationProvider name="contraseña" rules="required|min:8" vid="confirmation" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
@@ -89,7 +89,7 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6"> <!-- confirmation password -->
-                <label for="confirmPassword" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Confirme contraseña</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Confirme contraseña</label>
                 <ValidationProvider name="confirmación de contraseña" rules="required|confirmed:confirmation|min:8" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
@@ -105,7 +105,7 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6"> <!-- key -->
-                <label for="newUserCode" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Código de nuevo usuario</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Código de nuevo usuario</label>
                 <ValidationProvider name="código de nuevo usuario" rules="required" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
@@ -121,7 +121,7 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6"> <!-- educational institution name -->
-                <label for="educationalInstitutionName" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Nombre de la institución educativa</label>
+                <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Nombre de la institución educativa</label>
                 <ValidationProvider name="institución educativa" rules="required" v-slot="{ errors }">
                   <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
                     <div class="bg-orange px-3">
@@ -136,7 +136,7 @@
                   </div>
                 </ValidationProvider>
               </div>
-              <div class="mb-6">
+              <div class="mb-6 col-span-1 md:col-span-2">
                 <button type="button" @click="register" :disabled="invalid" :class="invalid ? 'button-primary-disabled w-full my-3' : 'button-primary w-full my-3'">Crear cuenta</button>
               </div>
             </form>
@@ -157,8 +157,8 @@
 
 <script>
   import { ValidationProvider, ValidationObserver } from 'vee-validate';
-  import ProfileService from '../services/ProfileService';
-  import AuthService from '../services/AuthService';
+  import EducationalInstitutionService from "@/services/EducationalInstitutionService";
+  import TeacherService from '../services/TeacherService';
 
   export default {
     name: "Register",
@@ -185,7 +185,7 @@
         this.$router.go(-1);
       },
       openEducationalInstitutionsDialog() {
-        ProfileService.getPreregisteredEducationalInstitutions().then((response) => {
+        EducationalInstitutionService.getPreregisteredEducationalInstitutions().then((response) => {
           this.educationalInstitutions = response.data;
           const options = this.educationalInstitutions.reduce((a, x) => ({...a, [x.id]: x.name}), {});
           this.$swal({
@@ -209,7 +209,7 @@
         });
       },
       register() {
-        AuthService.createFirstUser(this.newUser).then((response) => {
+        TeacherService.createFirstUser(this.newUser).then((response) => {
           if (response.status == 201) {
             this.$swal('La cuenta ha sido creada exitosamente', '', 'success');
             this.$router.push('login');

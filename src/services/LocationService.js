@@ -1,12 +1,27 @@
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "@/utils/axiosInstance";
 
 class LocationService {
     async getRegions() {
         try {
-            const response = axiosInstance.get('/regions');
-            return response;
+            return axiosInstance.get('/regions');
         } catch (error) {
-            return null;
+            return error;
+        }
+    }
+
+    async getProvinces(regionId) {
+        try {
+            return axiosInstance.get(`/regions/${regionId}/provinces`);
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async getDistricts(provinceId) {
+        try {
+            return axiosInstance.get(`/provinces/${provinceId}/districts`);
+        } catch (error) {
+            return error;
         }
     }
 }

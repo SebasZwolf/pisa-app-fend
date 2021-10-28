@@ -8,6 +8,7 @@ export default new Vuex.Store({
         token: '',
         userId: '',
         userRole: '',
+        educationalInstitution: '',
     },
     mutations: {
         setToken(state, newToken) {
@@ -18,17 +19,27 @@ export default new Vuex.Store({
         },
         setUserRole(state, newUserRole) {
             state.userRole = newUserRole
+        },
+        setEducationalInstitution(state, newEducationalInstitution) {
+            state.educationalInstitution = newEducationalInstitution;
         }
     },
     actions: {
-        setToken(context, newToken) {
-            context.commit('setToken', newToken);
+        setToken(context) {
+            const token = sessionStorage.getItem('token');
+            context.commit('setToken', token);
         },
-        setUserId(context, newUserId) {
-            context.commit('setUserId', newUserId);
+        setUserId(context) {
+            const userId = sessionStorage.getItem('userId');
+            context.commit('setUserId', userId);
         },
-        setUserRole(context, newUserRole) {
-            context.commit('setUserRole', newUserRole);
+        setUserRole(context) {
+            const userRole = sessionStorage.getItem('userRole');
+            context.commit('setUserRole', userRole);
+        },
+        setEducationalInstitution(context) {
+            const eduIns = sessionStorage.getItem('educationalInstitutionId');
+            context.commit('setEducationalInstitution', eduIns);
         }
     },
     getters: {
@@ -40,6 +51,9 @@ export default new Vuex.Store({
         },
         getUserRole(state) {
             return state.userRole;
+        },
+        getEducationalInstitution(state) {
+            return state.educationalInstitution;
         }
     }
 });

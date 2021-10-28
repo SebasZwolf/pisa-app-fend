@@ -14,4 +14,10 @@
         @apply border-2 border-gray-400 text-gray-600
         cursor-not-allowed;
     }
+
+    .button-secondary {
+        @apply border-2 border-brown text-white bg-brown p-1
+        hover:bg-white hover:text-brown hover:border-transparent
+        transition-all duration-100;
+    }
 }

@@ -137,9 +137,8 @@ export default {
       if (response.status === 200) {
         this.name = `${response.data.firstName} ${response.data.lastName}`;
       }
-    }).catch((error) => {
-      // TODO: error handling
-      console.log(error);
+    }).catch(() => {
+      this.$swal('Error', 'El servicio no está disponible', 'error');
     })
   }
 }

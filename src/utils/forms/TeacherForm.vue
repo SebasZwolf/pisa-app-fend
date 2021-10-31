@@ -11,7 +11,7 @@
               <div class="bg-orange px-3">
                 <i class="far fa-user"></i>
               </div>
-              <input type="text" name="firstName" required v-model="teacher.firstName"
+              <input type="text" name="firstName" required v-model="teacher.firstName" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
@@ -29,7 +29,7 @@
               <div class="bg-orange px-3">
                 <i class="far fa-user"></i>
               </div>
-              <input type="text" name="lastName" required v-model="teacher.lastName"
+              <input type="text" name="lastName" required v-model="teacher.lastName" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
@@ -45,7 +45,7 @@
               <div class="bg-orange px-3">
                 <i class="fas fa-envelope"></i>
               </div>
-              <input type="text" name="email" required v-model="teacher.email"
+              <input type="text" name="email" required v-model="teacher.email" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
@@ -61,7 +61,7 @@
                 <div class="bg-orange px-3">
                   <i class="fas fa-user-circle"></i>
                 </div>
-                <input type="text" name="username" required v-model="teacher.username"
+                <input type="text" name="username" required v-model="teacher.username" :readonly="mode === 'edit'"
                        class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                 />
               </span>
@@ -103,7 +103,7 @@
           </ValidationProvider>
         </div>
         <div>
-          <button type="button" @click="getValidation" :disabled="invalid" class="hidden"></button>
+          <button type="button" @click="getResult" :disabled="invalid" class="hidden"></button>
         </div>
       </form>
     </ValidationObserver>

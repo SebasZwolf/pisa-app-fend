@@ -15,9 +15,8 @@ export default {
         sessionStorage.setItem('educationalInstitutionId', response.data.educationalInstitution);
         this.$store.dispatch('setEducationalInstitution');
       }
-    }).catch((error) => {
-      // TODO: error handling
-      console.log(error);
+    }).catch(() => {
+      this.$swal('Error', 'El servicio no está disponible', 'error');
     })
   }
 }

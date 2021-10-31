@@ -27,7 +27,7 @@
                 <td class="truncate">{{ teacher.firstName + ' ' + teacher.lastName }}</td>
                 <td class="truncate">{{ teacher.username }}</td>
                 <td class="truncate">
-                  <span class="mr-0.5 md:mr-2 cursor-pointer" @click="editTeacherModal(teacher)"><i class="fas fa-redo-alt"></i></span>
+                  <span class="mr-0.5 md:mr-2 cursor-pointer" @click="teacherProfileModal(teacher)"><i class="fas fa-address-card"></i></span>
                   <span class="mr-0.5 md:mr-2 cursor-pointer" @click="changePassword(teacher)"><i class="fas fa-key"></i></span>
                   <span class="cursor-pointer" @click="deleteTeacher(teacher)"><i class="fas fa-times"></i></span>
                 </td>
@@ -70,7 +70,7 @@
       <div> <!-- Classrooms table -->
         <div class="flex items-center justify-between border-b-2 border-dashed m-1">
           <p class="text-md py-2 ml-3">Aulas</p>
-          <button class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
+          <button @click="newClassroomModal" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
         </div>
         <div class="md:mx-10 my-4 mx-0">
           <table class="table-fixed w-full">
@@ -83,15 +83,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="text-center" v-for="(classroom, index) of classrooms" :key="classroom.id">
-              <td class="truncate">{{ index + 1 }}</td>
-              <td class="truncate">{{ classroom.name }}</td>
-              <td class="truncate">{{ classroom.description }}</td>
-              <td class="truncate">
-                <span><i class="fas fa-redo-alt"></i></span>
-                <span><i class="fas fa-times"></i></span>
-              </td>
-            </tr>
+              <tr class="text-center" v-for="(classroom, index) of classrooms" :key="classroom.id">
+                <td class="truncate">{{ index + 1 }}</td>
+                <td class="truncate">{{ classroom.name }}</td>
+                <td class="truncate">{{ classroom.description }}</td>
+                <td class="truncate">
+                  <span class="pr-2 cursor-pointer"><i class="fas fa-user-plus"></i></span>
+                  <span class="pr-2 cursor-pointer"><i class="fas fa-redo-alt"></i></span>
+                  <span class="cursor-pointer"><i class="fas fa-times"></i></span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -107,6 +108,8 @@ import TeacherForm from "@/utils/forms/TeacherForm";
 import TeacherService from "@/services/TeacherService";
 import ChangePasswordForm from "@/utils/forms/ChangePasswordForm";
 import UserService from "@/services/UserService";
+import ClassroomForm from "@/utils/forms/ClassroomForm";
+import ClassroomService from "@/services/ClassroomService";
 
 export default {
   name: "EditOrganization",
@@ -125,10 +128,18 @@ export default {
         if (response.status === 200) {
           this.teachers = response.data;
         }
-      }).catch((error) => {
-        // TODO: handling error
-        console.log('error', error);
+      }).catch(() => {
+        this.$swal('Error', 'El servicio no está disponible', 'error');
       })
+    },
+    getClassrooms() {
+      ClassroomService.getClassroomByInstitution(this.$store.getters.getEducationalInstitution).then((response) => {
+        if (response.status === 200) {
+          this.classrooms = response.data;
+        }
+      }).catch(() => {
+        this.$swal('Error', 'El servicio no está disponible', 'error');
+      });
     },
     goToOrganization() {
       this.$router.push({ name: 'organization' });
@@ -194,38 +205,34 @@ export default {
           this.mountVueComponent(TeacherForm, 'new', null);
         },
         preConfirm: () => {
-          this.vueFormInstance.getValidation().then((validation) => {
+          return this.vueFormInstance.getValidation().then((validation) => {
             if (!validation) {
-              return this.$swal.showValidationMessage("Rellene todos los campos necesarios");
+              throw new Error('not-required');
             } else {
               const data = this.destroyVueComponent();
               data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
               TeacherService.createTeacher(data).then((response) => {
                 if (response.status === 201) {
-                  return response.status;
+                  this.getTeachers();
+                  this.$swal('Éxito', 'Profesor ha sido creado correctamente', 'success');
                 }
               }).catch(() => {
                 return this.$swal.showValidationMessage("Error al crear profesor");
               });
             }
+          }).catch(() => {
+            this.$swal.showValidationMessage("Rellene todos los campos necesarios")
           });
         },
-        allowOutsideClick: () => this.$swal.isLoading()
-      }).then((result) => {
-        if (result.value) {
-          this.$swal('Éxito', 'Profesor ha sido creado correctamente', 'success').then((value) => {
-            if (value) location.reload();
-          });
-        }
+        allowOutsideClick: () => !this.$swal.isLoading()
       });
     },
-    editTeacherModal(data) {
+    teacherProfileModal(data) {
       this.$swal({
         html: '<div id="TeacherForm"></div>',
-        showCancelButton: true,
+        showCancelButton: false,
         showConfirmButton: true,
-        confirmButtonText: 'Editar profesor',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Entendido',
         showLoaderOnConfirm: true,
         willOpen: () => {
           this.mountVueComponent(TeacherForm, 'edit', data);
@@ -247,7 +254,7 @@ export default {
             }
           });
         },
-        allowOutsideClick: () => this.$swal.isLoading()
+        allowOutsideClick: () => !this.$swal.isLoading()
       });
     },
     deleteTeacher(teacher) {
@@ -262,12 +269,46 @@ export default {
         if (result.isConfirmed) {
           TeacherService.deleteTeacher(teacher.id).then((response) => {
             if (response.status === 200) {
-              this.$swal('Éxito', 'Profesor ha sido eliminado correctamente', 'success').then((value) => {
-                if (value) location.reload();
+              this.$swal('Éxito', 'Profesor ha sido eliminado correctamente', 'success').then(() => {
+                this.getTeachers();
               });
             }
           });
         }
+      });
+    },
+    // Classroom methods
+    newClassroomModal() {
+      this.$swal({
+        html: '<div id="ClassroomForm"></div>',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Crear aula',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        willOpen: () => {
+          this.mountVueComponent(ClassroomForm, 'new', null);
+        },
+        preConfirm: () => {
+          return this.vueFormInstance.getValidation().then((validation) => {
+            if (!validation) {
+              throw new Error('not-required');
+            } else {
+              const data = this.destroyVueComponent();
+              data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
+              ClassroomService.createClassroom(data).then((response) => {
+                if (response.status === 201) {
+                  this.getClassrooms();
+                  this.$swal('Éxito', 'Aula ha sido creada correctamente', 'success');
+                }
+              }).catch(() => {
+                return this.$swal.showValidationMessage("Error al crear aula");
+              });
+            }
+          }).catch(() => {
+            this.$swal.showValidationMessage("Rellene todos los campos necesarios")
+          });
+        },
       });
     },
   },
@@ -275,6 +316,7 @@ export default {
     this.$store.dispatch('setToken');
     this.$store.dispatch('setEducationalInstitution');
     this.getTeachers();
+    this.getClassrooms();
   },
 }
 </script>

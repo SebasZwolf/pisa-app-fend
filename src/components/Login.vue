@@ -9,9 +9,9 @@
           <ValidationObserver v-slot="{ invalid }">
             <form @submit.prevent="login">
               <div class="mb-6">
-                <label for="username" class="block mb-2 text-sm text-gray-600">Usuario</label>
+                <label class="block mb-2 text-sm text-gray-600">Usuario</label>
                 <ValidationProvider name="usuario" rules="required" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-user-circle"></i>
                     </div>
@@ -25,9 +25,9 @@
                 </ValidationProvider>
               </div>
               <div class="mb-6">
-                <label for="password" class="block mb-2 text-sm text-gray-600">Contraseña</label>
+                <label class="block mb-2 text-sm text-gray-600">Contraseña</label>
                 <ValidationProvider name="contraseña" rules="required" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-key"></i>
                     </div>
@@ -114,11 +114,13 @@
             }
           });
         }).catch((error) => {
-          if (error.response.status === 401) {
-            this.$swal('Contraseña incorrecta', '', 'warning');
-          }
-          if (error.response.status === 404) {
-            this.$swal('El usuario no existe', '', 'warning');
+          if (error.response) {
+            if (error.response.status === 401) {
+              this.$swal('Contraseña incorrecta', '', 'warning');
+            }
+            if (error.response.status === 404) {
+              this.$swal('El usuario no existe', '', 'warning');
+            }
           }
         });
       },

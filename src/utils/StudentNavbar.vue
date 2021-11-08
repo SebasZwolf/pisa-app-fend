@@ -32,7 +32,7 @@
       </div>
     </transition>
     <!-- buttons on left side -->
-    <aside class="transform top-0 left-0 w-64 bg-orange fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30" :class="isOpen ? 'translate-x-0' : '-translate-x-full'">
+    <aside class="transform top-0 left-0 w-64 bg-orange-light fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30" :class="isOpen ? 'translate-x-0' : '-translate-x-full'">
       <span @click="isOpen = false" class="flex w-full items-center p-4 border-b">
         <span class="text-3xl mx-auto">
           <i class="fas fa-landmark"></i>

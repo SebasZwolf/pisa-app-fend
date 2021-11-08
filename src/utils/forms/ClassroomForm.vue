@@ -7,8 +7,8 @@
             Nombre
           </label>
           <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-            <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
-              <div class="bg-orange px-3">
+            <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
+              <div class="bg-orange w-16">
                 <i class="fas fa-file-signature"></i>
               </div>
               <input type="text" name="name" required v-model="classroom.name"
@@ -25,8 +25,8 @@
             Descripción
           </label>
           <ValidationProvider name="descripción" rules="max:250" v-slot="{ errors }">
-            <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
-              <div class="bg-orange px-3">
+            <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
+              <div class="bg-orange w-16">
                 <i class="fas fa-file-signature"></i>
               </div>
               <input type="text" name="description" required v-model="classroom.description"

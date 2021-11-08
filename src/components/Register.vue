@@ -11,7 +11,7 @@
               <div class="mb-6"> <!-- username -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Usuario</label>
                 <ValidationProvider name="usuario" rules="required" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-user-circle"></i>
                     </div>
@@ -26,8 +26,8 @@
               </div>
               <div class="mb-6"> <!-- first name -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Nombre</label>
-                <ValidationProvider name="nombre" rules="required|alpha" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                <ValidationProvider name="nombre" rules="required|alpha_spaces" v-slot="{ errors }">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="far fa-user"></i>
                     </div>
@@ -42,8 +42,8 @@
               </div>
               <div class="mb-6"> <!-- last name -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Apellidos</label>
-                <ValidationProvider name="apellidos" rules="required|alpha" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                <ValidationProvider name="apellidos" rules="required|alpha_spaces" v-slot="{ errors }">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="far fa-user"></i>
                     </div>
@@ -59,7 +59,7 @@
               <div class="mb-6"> <!-- email -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Correo electrónico</label>
                 <ValidationProvider name="correo electrónico" rules="required|email" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-envelope"></i>
                     </div>
@@ -75,7 +75,7 @@
               <div class="mb-6"> <!-- password -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Contraseña</label>
                 <ValidationProvider name="contraseña" rules="required|min:8" vid="confirmation" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-key"></i>
                     </div>
@@ -91,7 +91,7 @@
               <div class="mb-6"> <!-- confirmation password -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Confirme contraseña</label>
                 <ValidationProvider name="confirmación de contraseña" rules="required|confirmed:confirmation|min:8" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-key"></i>
                     </div>
@@ -107,7 +107,7 @@
               <div class="mb-6"> <!-- key -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Código de nuevo usuario</label>
                 <ValidationProvider name="código de nuevo usuario" rules="required" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-lock"></i>
                     </div>
@@ -123,7 +123,7 @@
               <div class="mb-6"> <!-- educational institution name -->
                 <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Nombre de la institución educativa</label>
                 <ValidationProvider name="institución educativa" rules="required" v-slot="{ errors }">
-                  <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
+                  <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
                     <div class="bg-orange px-3">
                       <i class="fas fa-graduation-cap"></i>
                     </div>

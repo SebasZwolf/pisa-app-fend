@@ -44,7 +44,7 @@
         </span>
         <span>Inicio</span>
       </span>
-      <span @click="isOpen = false" class="flex items-center p-4 hover:bg-white">
+      <span @click="profile" class="flex items-center p-4 hover:bg-white cursor-pointer">
         <span class="mr-2">
           <i class="fas fa-user-circle"></i>
         </span>
@@ -95,11 +95,14 @@ export default {
       this.isOpen = !this.isOpen
     },
     organization() {
-      this.$router.push("organization")
+      this.$router.push({ name: "organization" });
     },
     home() {
       this.isOpen = false;
       this.$router.push({ name: 'teacher-home' });
+    },
+    profile() {
+      this.$router.push({ name: 'teacher-profile' });
     },
     signOut() {
       this.isOpen = false;

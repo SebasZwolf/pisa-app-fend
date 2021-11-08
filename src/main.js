@@ -9,7 +9,7 @@ import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-va
 import './index.css' // Tailwind CSS
 import 'sweetalert2/dist/sweetalert2.min.css'; // SweetAlert2
 import es from 'vee-validate/dist/locale/es.json' // VeeValidate Localization es
-import { required, email, confirmed, min, alpha, required_if, max } from 'vee-validate/dist/rules'; // VeeValidate Rules
+import { required, email, confirmed, min, alpha, required_if, max, alpha_spaces } from 'vee-validate/dist/rules'; // VeeValidate Rules
 import store from './store'; // Vuex Store
 
 Vue.config.productionTip = false
@@ -31,6 +31,7 @@ extend('min', min);
 extend('alpha', alpha);
 extend('required_if', required_if);
 extend('max', max);
+extend('alpha_spaces', alpha_spaces);
 
 new Vue({
   router,

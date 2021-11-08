@@ -16,6 +16,22 @@ class StudentService {
             return error;
         }
     }
+
+    async editStudent(data, studentId) {
+        try {
+            return axiosInstance.put(`/students/${studentId}`, data);
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async deleteStudent(studentId) {
+        try {
+            return axiosInstance.delete(`/students/${studentId}`);
+        } catch (error) {
+            return error;
+        }
+    }
 }
 
 export default new StudentService();

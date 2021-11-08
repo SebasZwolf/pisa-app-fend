@@ -7,7 +7,7 @@
         <button @click="goToOrganization" class="button-secondary text-right mr-2.5 truncate">Volver a vista general</button>
       </div>
       <div> <!-- Teachers table -->
-        <div class="flex items-center justify-between border-b-2 border-dashed m-1">
+        <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Docentes</p>
           <button @click="newTeacherModal" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
         </div>
@@ -37,9 +37,9 @@
         </div>
       </div>
       <div> <!-- Students table -->
-        <div class="flex items-center justify-between border-b-2 border-dashed m-1">
+        <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Alumnos</p>
-          <button class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
+          <button @click="newStudentModal" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
         </div>
         <div class="md:mx-10 my-4 mx-0">
           <table class="table-fixed w-full">
@@ -59,8 +59,9 @@
                 <td class="truncate">{{ student.username }}</td>
                 <td class="truncate">{{ student.classRoom }}</td>
                 <td class="truncate">
-                  <span class="px-2 cursor-pointer"><i class="fas fa-redo-alt"></i></span>
-                  <span class="cursor-pointer"><i class="fas fa-times"></i></span>
+                  <span class="px-2 cursor-pointer" @click="editStudentModal(student)"><i class="fas fa-redo-alt"></i></span>
+                  <span class="mr-0.5 md:mr-2 cursor-pointer" @click="changePassword(student)"><i class="fas fa-key"></i></span>
+                  <span class="cursor-pointer" @click="deleteStudent(student)"><i class="fas fa-times"></i></span>
                 </td>
               </tr>
             </tbody>
@@ -68,7 +69,7 @@
         </div>
       </div>
       <div> <!-- Classrooms table -->
-        <div class="flex items-center justify-between border-b-2 border-dashed m-1">
+        <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Aulas</p>
           <button @click="newClassroomModal" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
         </div>
@@ -88,9 +89,9 @@
                 <td class="truncate">{{ classroom.name }}</td>
                 <td class="truncate">{{ classroom.description }}</td>
                 <td class="truncate">
-                  <span class="pr-2 cursor-pointer"><i class="fas fa-user-plus"></i></span>
-                  <span class="pr-2 cursor-pointer"><i class="fas fa-redo-alt"></i></span>
-                  <span class="cursor-pointer"><i class="fas fa-times"></i></span>
+                  <span class="pr-2 cursor-pointer" @click="assignTeacherToClassroom(classroom)"><i class="fas fa-user-plus"></i></span>
+                  <span class="pr-2 cursor-pointer" @click="editClassroomModal(classroom)"><i class="fas fa-redo-alt"></i></span>
+                  <span class="cursor-pointer" @click="deleteClassroom(classroom)"><i class="fas fa-times"></i></span>
                 </td>
               </tr>
             </tbody>
@@ -110,6 +111,8 @@ import ChangePasswordForm from "@/utils/forms/ChangePasswordForm";
 import UserService from "@/services/UserService";
 import ClassroomForm from "@/utils/forms/ClassroomForm";
 import ClassroomService from "@/services/ClassroomService";
+import StudentForm from "@/utils/forms/StudentForm";
+import StudentService from "@/services/StudentService";
 
 export default {
   name: "EditOrganization",
@@ -136,6 +139,15 @@ export default {
       ClassroomService.getClassroomByInstitution(this.$store.getters.getEducationalInstitution).then((response) => {
         if (response.status === 200) {
           this.classrooms = response.data;
+        }
+      }).catch(() => {
+        this.$swal('Error', 'El servicio no está disponible', 'error');
+      });
+    },
+    getStudents() {
+      StudentService.getStudentsByInstitution(this.$store.getters.getEducationalInstitution).then((response) => {
+        if (response.status === 200) {
+          this.students = response.data;
         }
       }).catch(() => {
         this.$swal('Error', 'El servicio no está disponible', 'error');
@@ -242,15 +254,7 @@ export default {
             if (!validation) {
               return this.$swal.showValidationMessage("Rellene todos los campos necesarios");
             } else {
-              const data = this.destroyVueComponent();
-              data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
-              /*TeacherService.createTeacher(data).then((response) => {
-                if (response.status === 201) {
-                  return response.status;
-                }
-              }).catch(() => {
-                return this.$swal.showValidationMessage("Error al editar profesor");
-              });*/
+              this.destroyVueComponent();
             }
           });
         },
@@ -311,12 +315,173 @@ export default {
         },
       });
     },
+    editClassroomModal(classroom) {
+      this.$swal({
+        html: '<div id="ClassroomForm"></div>',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Editar aula',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        willOpen: () => {
+          this.mountVueComponent(ClassroomForm, 'edit', classroom);
+        },
+        preConfirm: () => {
+          return this.vueFormInstance.getValidation().then((validation) => {
+            if (!validation) {
+              throw new Error('not-required');
+            } else {
+              const data = this.destroyVueComponent();
+              data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
+              ClassroomService.editClassroom(data, classroom.id).then((response) => {
+                if (response.status === 201) {
+                  this.getClassrooms();
+                  this.$swal('Éxito', `El aula ha sido modificada correctamente`, 'success');
+                }
+              }).catch(() => {
+                return this.$swal.showValidationMessage("Error al modificar aula");
+              });
+            }
+          }).catch(() => {
+            this.$swal.showValidationMessage("Rellene todos los campos necesarios");
+          });
+        },
+      });
+    },
+    deleteClassroom(classroom) {
+      this.$swal({
+        title: '¿Está seguro?',
+        text: `Se eliminará el aula ${classroom.name}.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'No, cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          ClassroomService.deleteClassroom(classroom.id).then((response) => {
+            if (response.status === 200) {
+              this.$swal('Éxito', `El aula ${classroom.name} ha sido eliminado correctamente`, 'success').then(() => {
+                this.getClassrooms();
+              });
+            }
+          });
+        }
+      });
+    },
+    assignTeacherToClassroom(classroom) {
+      this.$swal({
+        title: '¿Está seguro?',
+        text: `Se le asignará al aula ${classroom.name}`,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, asignar',
+        cancelButtonText: 'No, cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          ClassroomService.assignTeacherToClassroom(Number(this.$store.getters.getUserId), classroom.id).then((response) => {
+            if (response.status === 201) {
+              this.$swal('Éxito', `Ha sido asignado correctamente al aula ${classroom.name}`, 'success');
+            }
+          }).catch((error) => {
+            console.log('error', error.response);
+          });
+        }
+      });
+    },
+    // Student methods
+    newStudentModal() {
+      this.$swal({
+        html: '<div id="StudentForm"></div>',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Crear alumno',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        willOpen: () => {
+          this.mountVueComponent(StudentForm, 'new', this.$store.getters.getEducationalInstitution);
+        },
+        preConfirm: () => {
+          return this.vueFormInstance.getValidation().then((validation) => {
+            if (!validation) {
+              throw new Error('not-required');
+            } else {
+              const data = this.destroyVueComponent();
+              StudentService.createStudent(data).then((response) => {
+                if (response.status === 201) {
+                  this.getStudents();
+                  this.$swal('Éxito', 'Alumno ha sido creado correctamente', 'success');
+                }
+              }).catch(() => {
+                return this.$swal.showValidationMessage("Error al crear profesor");
+              });
+            }
+          }).catch(() => {
+            this.$swal.showValidationMessage("Rellene todos los campos necesarios")
+          });
+        },
+        allowOutsideClick: () => !this.$swal.isLoading()
+      });
+    },
+    editStudentModal(student) {
+      this.$swal({
+        html: '<div id="StudentForm"></div>',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Editar alumno',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        willOpen: () => {
+          this.mountVueComponent(StudentForm, 'edit', { student, educationalInstitution: this.$store.getters.getEducationalInstitution });
+        },
+        preConfirm: () => {
+          return this.vueFormInstance.getValidation().then((validation) => {
+            if (!validation) {
+              throw new Error('not-required');
+            } else {
+              const data = this.destroyVueComponent();
+              delete data.classRoomId;
+              StudentService.editStudent(data, student.id).then((response) => {
+                if (response.status === 200) {
+                  this.getStudents();
+                  this.$swal('Éxito', `El alumno ha sido modificado correctamente`, 'success');
+                }
+              }).catch(() => {
+                return this.$swal.showValidationMessage("Error al modificar el alumno");
+              });
+            }
+          }).catch(() => {
+            this.$swal.showValidationMessage("Rellene todos los campos necesarios");
+          });
+        },
+      });
+    },
+    deleteStudent(student) {
+      this.$swal({
+        title: '¿Está seguro?',
+        text: `Se eliminará el alumno ${student.firstName} ${student.lastName}.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'No, cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          StudentService.deleteStudent(student.id).then((response) => {
+            if (response.status === 200) {
+              this.$swal('Éxito', `El alumno ${student.firstName} ${student.lastName} ha sido eliminado correctamente`, 'success').then(() => {
+                this.getStudents();
+              });
+            }
+          });
+        }
+      });
+    },
   },
   created() {
     this.$store.dispatch('setToken');
     this.$store.dispatch('setEducationalInstitution');
     this.getTeachers();
     this.getClassrooms();
+    this.getStudents();
   },
 }
 </script>

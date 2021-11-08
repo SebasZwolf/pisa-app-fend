@@ -5,8 +5,8 @@
         <div> <!-- password -->
           <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Contraseña</label>
           <ValidationProvider name="contraseña" rules="required|min:8" vid="confirmation" v-slot="{ errors }">
-            <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
-              <div class="bg-orange px-3">
+            <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600">
+              <div class="bg-orange w-16">
                 <i class="fas fa-key"></i>
               </div>
               <input type="password" name="password" required v-model="user.password"
@@ -21,8 +21,8 @@
         <div> <!-- confirmation password -->
           <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Confirme contraseña</label>
           <ValidationProvider name="confirmación de contraseña" rules="required|confirmed:confirmation|min:8" v-slot="{ errors }">
-            <span class="flex items-center leading-normal border-0 text-3xl text-gray-600">
-              <div class="bg-orange px-3">
+            <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600">
+              <div class="bg-orange w-16">
                 <i class="fas fa-key"></i>
               </div>
               <input type="password" name="confirmPassword" required v-model="confirmationPassword"

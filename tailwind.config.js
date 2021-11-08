@@ -7,7 +7,11 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      lineHeight: {
+        'extra-snug': '1.450'
+      },
+    },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',

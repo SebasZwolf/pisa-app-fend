@@ -8,6 +8,7 @@ import StudentHome from "@/components/StudentHome";
 import TeacherHome from "@/components/TeacherHome";
 import Organization from "@/components/Organization";
 import EditOrganization from "@/components/EditOrganization";
+import TeacherProfile from "@/components/Teacher/TeacherProfile";
 
 Vue.use(VueRouter)
 
@@ -18,8 +19,11 @@ const routes = [
     { path: "/register", name: 'register', component: Register},
     { path: "/teacher", name: 'teacher-home', component: TeacherHome },
     { path: "/student", name: 'student-home', component: StudentHome },
+    // Teacher routes
     { path: "/organization", name: 'organization', component: Organization },
     { path: "/organization/edit", name: 'edit-organization', component: EditOrganization },
+    { path: "/teacher/profile", name: 'teacher-profile', component: TeacherProfile },
+    // Student routes
 ]
 
 const router = new VueRouter({

@@ -104,7 +104,6 @@
 
 <script>
 import TeacherNavbar from "@/utils/TeacherNavbar";
-import Vue from "vue";
 import TeacherForm from "@/utils/forms/TeacherForm";
 import TeacherService from "@/services/TeacherService";
 import ChangePasswordForm from "@/utils/forms/ChangePasswordForm";
@@ -113,6 +112,7 @@ import ClassroomForm from "@/utils/forms/ClassroomForm";
 import ClassroomService from "@/services/ClassroomService";
 import StudentForm from "@/utils/forms/StudentForm";
 import StudentService from "@/services/StudentService";
+import formHandlers from "@/utils/formHandlers";
 
 export default {
   name: "EditOrganization",
@@ -156,21 +156,6 @@ export default {
     goToOrganization() {
       this.$router.push({ name: 'organization' });
     },
-    mountVueComponent(comp, mode, data) {
-      let Component = Vue.extend(comp);
-      this.vueFormInstance = new Component({
-        propsData: { mode: mode, data: data },
-      });
-      this.vueFormInstance.$mount();
-      this.vueFormInstance.initForm();
-      document.getElementById(comp.name).appendChild(this.vueFormInstance.$el);
-    },
-    destroyVueComponent() {
-      const data = this.vueFormInstance.getResult();
-      this.vueFormInstance.$destroy();
-      this.vueFormInstance = null;
-      return data;
-    },
     // All
     changePassword(user) {
       this.$swal({
@@ -181,20 +166,22 @@ export default {
         cancelButtonText: 'Cancelar',
         showLoaderOnConfirm: true,
         willOpen: () => {
-          this.mountVueComponent(ChangePasswordForm, '', null);
+          formHandlers.mountVueComponents(ChangePasswordForm, '', null);
         },
         preConfirm: () => {
-          this.vueFormInstance.getValidation().then((validation) => {
+          return formHandlers.getFormInstance().getValidation().then((validation) => {
             if (!validation) {
-              return this.$swal.showValidationMessage("Rellene todos los campos necesarios");
+              throw new Error('not-required');
             } else {
-              const data = this.destroyVueComponent();
+              const data = formHandlers.destroyVueComponent();
               UserService.changeUserPassword(user.id, data).then((response) => {
                 return response.data;
               }).catch(() => {
                 return this.$swal.showValidationMessage("Error al cambiar la contraseña");
               });
             }
+          }).catch(() => {
+            this.$swal.showValidationMessage("Rellene todos los campos necesarios")
           });
         },
         allowOutsideClick: () => this.$swal.isLoading()
@@ -214,14 +201,14 @@ export default {
         cancelButtonText: 'Cancelar',
         showLoaderOnConfirm: true,
         willOpen: () => {
-          this.mountVueComponent(TeacherForm, 'new', null);
+          formHandlers.mountVueComponents(TeacherForm, 'new', null);
         },
         preConfirm: () => {
-          return this.vueFormInstance.getValidation().then((validation) => {
+          return formHandlers.getFormInstance().getValidation().then((validation) => {
             if (!validation) {
               throw new Error('not-required');
             } else {
-              const data = this.destroyVueComponent();
+              const data = formHandlers.destroyVueComponent();
               data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
               TeacherService.createTeacher(data).then((response) => {
                 if (response.status === 201) {
@@ -247,15 +234,11 @@ export default {
         confirmButtonText: 'Entendido',
         showLoaderOnConfirm: true,
         willOpen: () => {
-          this.mountVueComponent(TeacherForm, 'edit', data);
+          formHandlers.mountVueComponents(TeacherForm, 'edit', data);
         },
         preConfirm: () => {
-          this.vueFormInstance.getValidation().then((validation) => {
-            if (!validation) {
-              return this.$swal.showValidationMessage("Rellene todos los campos necesarios");
-            } else {
-              this.destroyVueComponent();
-            }
+          formHandlers.getFormInstance().getValidation().then(() => {
+            formHandlers.destroyVueComponent();
           });
         },
         allowOutsideClick: () => !this.$swal.isLoading()
@@ -277,6 +260,8 @@ export default {
                 this.getTeachers();
               });
             }
+          }).catch(() => {
+            this.$swal('Error', 'El profesor no ha podido ser eliminado', 'error');
           });
         }
       });
@@ -291,14 +276,14 @@ export default {
         cancelButtonText: 'Cancelar',
         showLoaderOnConfirm: true,
         willOpen: () => {
-          this.mountVueComponent(ClassroomForm, 'new', null);
+          formHandlers.mountVueComponents(ClassroomForm, 'new', null);
         },
         preConfirm: () => {
-          return this.vueFormInstance.getValidation().then((validation) => {
+          return formHandlers.getFormInstance().getValidation().then((validation) => {
             if (!validation) {
               throw new Error('not-required');
             } else {
-              const data = this.destroyVueComponent();
+              const data = formHandlers.destroyVueComponent();
               data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
               ClassroomService.createClassroom(data).then((response) => {
                 if (response.status === 201) {
@@ -324,14 +309,14 @@ export default {
         cancelButtonText: 'Cancelar',
         showLoaderOnConfirm: true,
         willOpen: () => {
-          this.mountVueComponent(ClassroomForm, 'edit', classroom);
+          formHandlers.mountVueComponents(ClassroomForm, 'edit', classroom);
         },
         preConfirm: () => {
-          return this.vueFormInstance.getValidation().then((validation) => {
+          return formHandlers.getFormInstance().getValidation().then((validation) => {
             if (!validation) {
               throw new Error('not-required');
             } else {
-              const data = this.destroyVueComponent();
+              const data = formHandlers.destroyVueComponent();
               data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
               ClassroomService.editClassroom(data, classroom.id).then((response) => {
                 if (response.status === 201) {
@@ -382,8 +367,8 @@ export default {
             if (response.status === 201) {
               this.$swal('Éxito', `Ha sido asignado correctamente al aula ${classroom.name}`, 'success');
             }
-          }).catch((error) => {
-            console.log('error', error.response);
+          }).catch(() => {
+            this.$swal('Error', `No se ha podido asignar al aula ${classroom.name}`, 'error');
           });
         }
       });
@@ -398,14 +383,14 @@ export default {
         cancelButtonText: 'Cancelar',
         showLoaderOnConfirm: true,
         willOpen: () => {
-          this.mountVueComponent(StudentForm, 'new', this.$store.getters.getEducationalInstitution);
+          formHandlers.mountVueComponents(StudentForm, 'new', this.$store.getters.getEducationalInstitution);
         },
         preConfirm: () => {
-          return this.vueFormInstance.getValidation().then((validation) => {
+          return formHandlers.getFormInstance().getValidation().then((validation) => {
             if (!validation) {
               throw new Error('not-required');
             } else {
-              const data = this.destroyVueComponent();
+              const data = formHandlers.destroyVueComponent();
               StudentService.createStudent(data).then((response) => {
                 if (response.status === 201) {
                   this.getStudents();
@@ -431,14 +416,14 @@ export default {
         cancelButtonText: 'Cancelar',
         showLoaderOnConfirm: true,
         willOpen: () => {
-          this.mountVueComponent(StudentForm, 'edit', { student, educationalInstitution: this.$store.getters.getEducationalInstitution });
+          formHandlers.mountVueComponents(StudentForm, 'edit', { student, educationalInstitution: this.$store.getters.getEducationalInstitution });
         },
         preConfirm: () => {
-          return this.vueFormInstance.getValidation().then((validation) => {
+          return formHandlers.getFormInstance().getValidation().then((validation) => {
             if (!validation) {
               throw new Error('not-required');
             } else {
-              const data = this.destroyVueComponent();
+              const data = formHandlers.destroyVueComponent();
               delete data.classRoomId;
               StudentService.editStudent(data, student.id).then((response) => {
                 if (response.status === 200) {
@@ -471,6 +456,8 @@ export default {
                 this.getStudents();
               });
             }
+          }).catch(() => {
+            this.$swal('Error', `El alumno ${student.firstName} ${student.lastName} no ha podido ser eliminado`, 'error');
           });
         }
       });

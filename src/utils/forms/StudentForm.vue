@@ -12,7 +12,7 @@
                 <i class="far fa-user"></i>
               </div>
               <input type="text" name="firstName" required v-model="student.firstName"
-                     class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring-indigo-100 focus:border-indigo-300"
+                     class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
             <div class="text-sm">
@@ -30,7 +30,7 @@
                 <i class="far fa-user"></i>
               </div>
               <input type="text" name="lastName" required v-model="student.lastName"
-                     class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                     class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
             <div class="text-sm">
@@ -46,7 +46,7 @@
                 <i class="fas fa-envelope"></i>
               </div>
               <input type="text" name="email" required v-model="student.email"
-                     class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                     class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
             <div class="text-sm">
@@ -62,7 +62,7 @@
                   <i class="fas fa-user-circle"></i>
                 </div>
                 <input type="text" name="username" required v-model="student.username"
-                       class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                       class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                 />
               </span>
             <div class="text-sm">
@@ -78,7 +78,7 @@
                 <i class="fas fa-key"></i>
               </div>
               <input type="password" name="password" :required="mode === 'new'" v-model="student.password"
-                     class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                     class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
             <div class="text-sm">
@@ -94,7 +94,7 @@
                 <i class="fas fa-key"></i>
               </div>
               <input type="password" name="confirmPassword" :required="mode === 'new'" v-model="confirmationPassword"
-                     class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                     class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
             <div class="text-sm">
@@ -109,7 +109,7 @@
               <div class="bg-orange w-16">
                 <i class="fas fa-book-reader"></i>
               </div>
-              <select v-model="student.classRoom" class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300">
+              <select v-model="student.classRoom" class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300">
                 <option v-for="classroom of classrooms" :key="classroom.id" :value="classroom.id">{{ classroom.name }}</option>
               </select>
             </span>

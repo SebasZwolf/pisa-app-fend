@@ -9,6 +9,14 @@ class ClassroomService {
         }
     }
 
+    async getClassroomById(classroomId) {
+        try {
+            return axiosInstance.get(`/class-rooms/${classroomId}`);
+        } catch (error) {
+            return error;
+        }
+    }
+
     async createClassroom(data) {
         try {
             return axiosInstance.post('/class-rooms', data);

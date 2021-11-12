@@ -5,11 +5,13 @@ import VueAxios from 'vue-axios'
 import router from './router'
 import VueSweetalert2 from 'vue-sweetalert2';
 import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-validate';
+const moment = require('moment')
+require('moment/locale/es')
 
 import './index.css' // Tailwind CSS
 import 'sweetalert2/dist/sweetalert2.min.css'; // SweetAlert2
 import es from 'vee-validate/dist/locale/es.json' // VeeValidate Localization es
-import { required, email, confirmed, min, alpha, required_if, max, alpha_spaces } from 'vee-validate/dist/rules'; // VeeValidate Rules
+import { required, email, confirmed, min, alpha, required_if, max, alpha_spaces, min_value, max_value, alpha_num } from 'vee-validate/dist/rules'; // VeeValidate Rules
 import store from './store'; // Vuex Store
 
 Vue.config.productionTip = false
@@ -32,6 +34,9 @@ extend('alpha', alpha);
 extend('required_if', required_if);
 extend('max', max);
 extend('alpha_spaces', alpha_spaces);
+extend('min_value', min_value);
+extend('max_value', max_value);
+extend('alpha_num', alpha_num);
 
 new Vue({
   router,
@@ -41,3 +46,6 @@ new Vue({
 
 Vue.use(VueAxios, axios);
 Vue.use(VueSweetalert2, options);
+Vue.use(require('vue-moment'), {
+  moment
+});

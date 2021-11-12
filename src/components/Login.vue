@@ -16,7 +16,7 @@
                       <i class="fas fa-user-circle"></i>
                     </div>
                     <input type="text" name="username" required v-model="userData.username"
-                      class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                      class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                     />
                   </span>
                   <div class="text-md">
@@ -32,7 +32,7 @@
                       <i class="fas fa-key"></i>
                     </div>
                     <input type="password" name="password" required v-model="userData.password"
-                      class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                      class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                     />
                   </span>
                   <div class="text-md">

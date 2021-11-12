@@ -9,6 +9,22 @@ class StudentService {
         }
     }
 
+    async getStudentsByClassroom(classroomId) {
+        try {
+            return axiosInstance.get(`/classRooms/${classroomId}/students`);
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async getStudentsById(studentId) {
+        try {
+            return axiosInstance.get(`/students/${studentId}`);
+        } catch (error) {
+            return error;
+        }
+    }
+
     async createStudent(data) {
         try {
             return axiosInstance.post('/students', data);

@@ -12,7 +12,7 @@
                 <i class="fas fa-file-signature"></i>
               </div>
               <input type="text" name="name" required v-model="classroom.name"
-                     class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                     class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
             <div class="text-sm">
@@ -30,7 +30,7 @@
                 <i class="fas fa-file-signature"></i>
               </div>
               <input type="text" name="description" required v-model="classroom.description"
-                     class="w-full py-2 placeholder-gray-300 border-2 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
+                     class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
               />
             </span>
             <div class="text-sm">

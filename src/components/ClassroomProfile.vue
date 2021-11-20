@@ -49,7 +49,7 @@
               {{ exam.name }}
             </div>
             <div class="text-right mx-3">
-              {{ exam.expirationDate | moment("from", "now") }}
+              {{ exam.expirationDate | moment("calendar") }}
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
           <p class="text-md py-2 ml-3">Alumnos del aula</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3">
-          <div class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto" v-for="student of students" :key="student.id" @click="goToStudentProfile(student.id)">
+          <div class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto" v-for="student of students" :key="student.id">
             <div class="w-full text-center">
               {{ student.firstName }} {{ student.lastName }}
             </div>
@@ -155,9 +155,6 @@ export default {
         },
         allowOutsideClick: () => !this.$swal.isLoading()
       });
-    },
-    goToStudentProfile(studentId) {
-      this.$router.push({ name: 'student-profile', params: { id: studentId }})
     },
   },
   created() {

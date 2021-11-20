@@ -161,7 +161,6 @@ export default {
       }
       this.getAreas();
       let date = new Date();
-      // this.minDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}T${date.getHours()}:${date.getMinutes()}`;
       this.minDate = date.toISOString();
     },
     getAreas() {

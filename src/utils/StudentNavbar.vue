@@ -10,7 +10,7 @@
     </div>
     <div class="flex items-center"> <!-- buttons on the right -->
       <div class="hidden md:block md:flex md:justify-between md:bg-transparent">
-        <button class="flex items-center p-3 font-medium mr-2 text-center bg-orange rounded hover:bg-white focus:outline-none focus:bg-white">
+        <button @click="profile" class="flex items-center p-3 font-medium mr-2 text-center bg-orange rounded hover:bg-white focus:outline-none focus:bg-white">
           <span><i class="fas fa-user"></i></span>
           <span class="mx-2">{{ name }}</span>
         </button>
@@ -38,13 +38,13 @@
           <i class="fas fa-landmark"></i>
         </span>
       </span>
-      <span @click="isOpen = false; home" class="flex items-center p-4 hover:bg-white">
+      <span @click="home" class="flex items-center cursor-pointer p-4 hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-home"></i>
         </span>
         <span>Inicio</span>
       </span>
-      <span @click="isOpen = false" class="flex items-center p-4 hover:bg-white">
+      <span @click="profile" class="flex items-center p-4 cursor-pointer hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-user-circle"></i>
         </span>
@@ -68,7 +68,7 @@
         </span>
         <span>Configuración</span>
       </span>
-      <span @click="signOut" class="flex items-center p-4 md:hidden block hover:bg-white">
+      <span @click="signOut" class="flex items-center cursor-pointer p-4 md:hidden block hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-power-off"></i>
         </span>
@@ -95,7 +95,11 @@ export default {
       this.isOpen = !this.isOpen
     },
     home() {
+      this.isOpen = false;
       this.$router.push({ name: 'student-home' });
+    },
+    profile() {
+      this.$router.push({ name: 'student-profile' });
     },
     signOut() {
       this.isOpen = false;

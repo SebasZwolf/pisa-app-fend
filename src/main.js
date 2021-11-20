@@ -5,6 +5,7 @@ import VueAxios from 'vue-axios'
 import router from './router'
 import VueSweetalert2 from 'vue-sweetalert2';
 import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-validate';
+import VueCountdown from '@chenfengyuan/vue-countdown';
 const moment = require('moment')
 require('moment/locale/es')
 
@@ -46,6 +47,7 @@ new Vue({
 
 Vue.use(VueAxios, axios);
 Vue.use(VueSweetalert2, options);
+Vue.component(VueCountdown.name, VueCountdown);
 Vue.use(require('vue-moment'), {
   moment
 });

@@ -68,7 +68,7 @@
         </span>
         <span>Configuración</span>
       </span>
-      <span @click="signOut" class="flex items-center p-4 md:hidden block hover:bg-white">
+      <span @click="signOut" class="flex items-center cursor-pointer p-4 md:hidden block hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-power-off"></i>
         </span>

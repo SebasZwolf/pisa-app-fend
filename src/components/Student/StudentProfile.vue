@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TeacherNavbar></TeacherNavbar>
+    <StudentNavbar></StudentNavbar>
     <section>
       <div class="flex items-center bg-orange-light justify-between border-0">
         <p class="text-lg py-2.5 ml-4">Perfil del estudiante</p>
@@ -87,7 +87,7 @@
                     <!-- <i class="fas fa-atom"></i> --> <!-- ciencia -->
                     {{ exam.name }}
                   </div>
-                  <div class="text-right mx-3">
+                  <div class="text-right mx-3" v-if="new Date() >= new Date(exam.startDate) && new Date() <= new Date(exam.expirationDate)">
                     <button class="button-secondary" @click="startExam(exam)">Comenzar examen</button>
                   </div>
                 </div>
@@ -101,16 +101,13 @@
 </template>
 
 <script>
-import TeacherNavbar from "@/utils/TeacherNavbar";
+import StudentNavbar from "@/utils/StudentNavbar";
 import StudentService from "@/services/StudentService";
 import ExamService from "@/services/ExamService";
 
 export default {
   name: "StudentProfile",
-  components: { TeacherNavbar },
-  props: [
-    'id'
-  ],
+  components: { StudentNavbar },
   data: () => ({
     student: {
       id: '',
@@ -128,7 +125,7 @@ export default {
       this.areas[index].open = !this.areas[index].open;
     },
     getStudent() {
-      StudentService.getStudentsById(this.id).then((response) => {
+      StudentService.getStudentsById(this.$store.getters.getUserId).then((response) => {
         if (response.status === 200) {
           this.student = response.data;
         }
@@ -166,14 +163,19 @@ export default {
         html: `<strong>Nombre de evaluación</strong>: ${exam.name}. <br>
         <strong>Descripción</strong>: ${exam.description}. <br>
         <strong>Duración</strong>: ${exam.duration} minutos. <br>
+        <strong>Inicio</strong>: ${new Date(exam.startDate).toLocaleString()} <br>
         <strong>Vencimiento</strong>: ${new Date(exam.expirationDate).toLocaleString()}`,
         title: 'Información de evaluación'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.push({ name: 'student-exam', params: { id: exam.id }});
+        }
       });
     }
   },
   created() {
     this.$store.dispatch('setToken');
-    this.$store.dispatch('setEducationalInstitution');
+    this.$store.dispatch('setUserId');
     this.getStudent();
     this.getAreas();
   },

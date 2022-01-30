@@ -50,7 +50,7 @@
         </span>
         <span>Perfil</span>
       </span>
-      <span @click="isOpen = false" class="flex items-center p-4 hover:bg-white">
+      <span @click="studyMaterial" class="flex items-center p-4 cursor-pointer hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-book-open"></i>
         </span>
@@ -100,6 +100,9 @@ export default {
     },
     profile() {
       this.$router.push({ name: 'student-profile' });
+    },
+    studyMaterial() {
+      this.$router.push({ name: 'study-material' });
     },
     signOut() {
       this.isOpen = false;

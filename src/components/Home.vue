@@ -9,7 +9,7 @@
         <h1 class="text-black-600 font-bold font-sans text-center text-xl my-3">Másteri</h1>
         <div class="mx-5">
           <button @click="toLogin" type="button" class="button-primary w-full my-3">Ingresar</button>
-          <button type="button" class="button-primary w-full my-1">Prueba relámpago</button>
+          <button @click="toThunderTest" type="button" class="button-primary w-full my-1">Prueba relámpago</button>
         </div>
         <div class="my-12"></div>
         <div class="bg-orange text-right text-xl">
@@ -30,6 +30,9 @@
     methods: {
       toLogin() {
         this.$router.push('login');
+      },
+      toThunderTest() {
+        this.$router.push('thunder-test');
       }
     }
   }

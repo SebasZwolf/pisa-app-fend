@@ -9,7 +9,7 @@
           <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16 border-0">
-                <i class="far fa-user"></i>
+                <i class="fas fa-file-signature"></i>
               </div>
               <input type="text" name="firstName" required v-model="evaluation.name" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring-indigo-100 focus:border-indigo-300"
@@ -27,7 +27,7 @@
           <ValidationProvider name="área" rules="required" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16 border-0">
-                <i class="far fa-user"></i>
+                <i class="fas fa-book-open"></i>
               </div>
               <select v-model="evaluation.area" class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300">
                 <option v-for="area of areas" :key="area.id" :value="area.id">{{ area.name }}</option>
@@ -45,7 +45,7 @@
           <ValidationProvider name="descripción" rules="required|alpha_spaces" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16 border-0">
-                <i class="far fa-user"></i>
+                <i class="fas fa-align-justify"></i>
               </div>
               <input type="text" name="description" required v-model="evaluation.description" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring-indigo-100 focus:border-indigo-300"
@@ -63,7 +63,7 @@
           <ValidationProvider name="fecha de expiración" rules="required" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16 border-0">
-                <i class="far fa-user"></i>
+                <i class="far fa-calendar-alt"></i>
               </div>
               <input type="datetime-local" name="startDate" required v-model="evaluation.startDate" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring-indigo-100 focus:border-indigo-300"
@@ -84,7 +84,7 @@
           <ValidationProvider name="cantidad de preguntas" rules="required|min_value:1|max_value:25" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16 border-0">
-                <i class="far fa-user"></i>
+                <i class="fas fa-list-ol"></i>
               </div>
               <input type="number" name="questionsQuantity" required v-model="evaluation.questionsQuantity" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring-indigo-100 focus:border-indigo-300"
@@ -102,7 +102,7 @@
           <ValidationProvider name="dificultad" rules="required|min_value:1|max_value:3" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16 border-0">
-                <i class="far fa-user"></i>
+                <i class="fas fa-sort-amount-down"></i>
               </div>
               <input type="number" name="dificultad" required v-model="evaluation.difficulty" :readonly="mode === 'edit'"
                      class="w-full py-2 placeholder-gray-300 border-2 border-l-0 border-orange focus:outline-none focus:ring-indigo-100 focus:border-indigo-300"

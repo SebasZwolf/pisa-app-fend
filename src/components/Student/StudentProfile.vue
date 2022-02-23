@@ -64,10 +64,72 @@
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Reportes generales</p>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
+          <div v-for="(area, index) of areas" v-bind:key="area.id">
+            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+              {{ area.name }}
+              <button @click="changeGeneralReportsAccordionStatus(index)" :hidden="!area.openGeneralReport"><i class="fas fa-chevron-up"></i></button>
+              <button @click="changeGeneralReportsAccordionStatus(index)" :hidden="area.openGeneralReport"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div v-show="area.openGeneralReport" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
+              <template v-if="area.generalReportData < 1">
+                No hay reporte general de esta área
+              </template>
+              <template v-else>
+                <line-chart v-if="area.generalReportLoaded" :chartdata="area.generalReport" :options="options"></line-chart>
+              </template>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
+          <p class="text-md py-2 ml-3">Reportes</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
+          <div v-for="(area, index) of areas" v-bind:key="area.id">
+            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+              {{ area.name }}
+              <button @click="changeReportsAccordionStatus(index)" :hidden="!area.openReport"><i class="fas fa-chevron-up"></i></button>
+              <button @click="changeReportsAccordionStatus(index)" :hidden="area.openReport"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <div v-show="area.openReport" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
+              <template v-if="area.report.thunderTestQuantity < 1">
+                No hay reportes de esta área. Realice evaluaciones para obtener reportes.
+              </template>
+              <template v-else>
+                <div class="flex justify-center my-2">
+                  <radial-progress-bar :diameter="150"
+                                       :completed-steps="area.report.levelOfCompetenceAchieved"
+                                       :total-steps="area.report.highestScoreOfTheCompetition">
+                    Nivel alcanzado<br>
+                    <strong>
+                      {{ area.report.levelOfCompetenceAchieved }}/{{ area.report.highestScoreOfTheCompetition }}
+                    </strong>
+                  </radial-progress-bar>
+                </div>
+                <div class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto">
+                  <div class="text-left mx-3">
+                    Ha realizado {{ area.report.thunderTestQuantity }} pruebas relámpago
+                  </div>
+                </div>
+                <div class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto">
+                  <div class="text-left mx-3">
+                    Nivel de competencia alcanzado: {{ area.report.levelOfCompetenceAchieved }}
+                  </div>
+                </div>
+                <div v-for="topic of area.report.problemsTopics" v-bind:key="topic"
+                    class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto">
+                  <div class="text-left mx-3">
+                    Tiene problemas con el tema <strong>{{ topic }}</strong>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Evaluaciones</p>
         </div>
-        <div class="mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
           <div v-for="(area, index) of areas" v-bind:key="area.id">
             <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
               {{ area.name }}
@@ -81,10 +143,10 @@
               <template v-else>
                 <div class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto" v-for="exam of area.exams" :key="exam.id">
                   <div class="text-left mx-3">
-                    <!--  <i class="fas fa-stream"></i> --> <!-- lectura -->
-                    <i class="fas fa-calculator"></i> <!-- matemática -->
-                    <!-- <i class="fas fa-coins"></i> --> <!-- finanzas -->
-                    <!-- <i class="fas fa-atom"></i> --> <!-- ciencia -->
+<!--                    <i class="fas fa-stream"></i> lectura-->
+                    <i class="fas fa-calculator"></i> <!--matemática-->
+<!--                    <i class="fas fa-coins"></i> finanzas
+                    <i class="fas fa-atom"></i>ciencia-->
                     {{ exam.name }}
                   </div>
                   <div class="text-right mx-3" v-if="new Date() >= new Date(exam.startDate) && new Date() <= new Date(exam.expirationDate)">
@@ -104,10 +166,13 @@
 import StudentNavbar from "@/utils/StudentNavbar";
 import StudentService from "@/services/StudentService";
 import ExamService from "@/services/ExamService";
+import ReportService from "@/services/ReportService";
+import RadialProgressBar from "vue-radial-progress";
+import LineChart from "@/utils/LineChart";
 
 export default {
   name: "StudentProfile",
-  components: { StudentNavbar },
+  components: { StudentNavbar, RadialProgressBar, LineChart },
   data: () => ({
     student: {
       id: '',
@@ -119,10 +184,36 @@ export default {
       classRoomId: '',
     },
     areas: [],
+    options: {
+      responsive: true,
+      aspectRatio: 1,
+      scales: {
+        xAxes: [{
+          gridLines: {
+            display: false
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            min: 0,
+            max: 100,
+            callback: function(value) {
+              return value + '%';
+            }
+          }
+        }]
+      }
+    }
   }),
   methods: {
     changeAccordionStatus(index) {
       this.areas[index].open = !this.areas[index].open;
+    },
+    changeReportsAccordionStatus(index) {
+      this.areas[index].openReport = !this.areas[index].openReport;
+    },
+    changeGeneralReportsAccordionStatus(index) {
+      this.areas[index].openGeneralReport = !this.areas[index].openGeneralReport;
     },
     getStudent() {
       StudentService.getStudentsById(this.$store.getters.getUserId).then((response) => {
@@ -138,10 +229,17 @@ export default {
         if (response.status === 200) {
           response.data.forEach(f => {
             f.open = false;
+            f.openReport = false;
+            f.openGeneralReport = true;
+            f.generalReportLoaded = false;
             f.exams = [];
+            f.report = [];
+            f.generalReport = [];
+            f.generalReportData = 0;
           });
           this.areas = response.data;
           this.getExams();
+          this.getGeneralReport();
         }
       });
     },
@@ -150,6 +248,35 @@ export default {
         ExamService.getExamsByArea(area.id, this.student.classRoomId).then((response) => {
           if (response.status === 200) {
             area.exams = response.data;
+          }
+        });
+      }
+    },
+    getReports() {
+      ReportService.getReportsByStudentId(this.$store.getters.getUserId).then((response) => {
+        if (response.status === 200) {
+          for (let report of response.data) {
+            this.areas.find(a => a.id === report.areaId).report = report;
+          }
+        }
+      });
+    },
+    getGeneralReport() {
+      for (let area of this.areas) {
+        ReportService.getGeneralReportByStudentIdAndAreaId(this.$store.getters.getUserId, area.id).then((response) => {
+          if (response.status === 200) {
+            area.generalReport = {
+              labels: Array.from({length: response.data.length}, (_, i) => i + 1),
+              datasets: [
+                {
+                  label: 'Evolución de rendimiento',
+                  backgroundColor: '#663300',
+                  data: response.data.map(a => a.percentage)
+                }
+              ]
+            }
+            area.generalReportLoaded = true;
+            area.generalReportData = response.data.length;
           }
         });
       }
@@ -178,6 +305,7 @@ export default {
     this.$store.dispatch('setUserId');
     this.getStudent();
     this.getAreas();
+    this.getReports();
   },
   computed: {
     fullName: function () {

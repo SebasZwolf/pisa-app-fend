@@ -21,6 +21,11 @@
               Volver a intentarlo
             </button>
           </div>
+          <div class="flex justify-center">
+            <button class="button-secondary hover:bg-orange-dark hover:text-white mt-1" @click="goToHome">
+              Regresar a pantalla principal
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -37,7 +42,10 @@ export default {
   methods: {
     startOver() {
       this.$router.push({ name: 'thunder-test' });
-    }
+    },
+    goToHome() {
+      this.$router.push({ name: 'student-home' });
+    },
   }
 }
 </script>

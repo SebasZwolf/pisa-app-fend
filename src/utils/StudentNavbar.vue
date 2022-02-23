@@ -56,7 +56,7 @@
         </span>
         <span>Material</span>
       </span>
-      <span @click="isOpen = false" class="flex items-center p-4 hover:bg-white">
+      <span @click="thunderTest" class="flex items-center p-4 cursor-pointer hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-bolt"></i>
         </span>
@@ -103,6 +103,9 @@ export default {
     },
     studyMaterial() {
       this.$router.push({ name: 'study-material' });
+    },
+    thunderTest() {
+      this.$router.push({ name: 'thunder-test' });
     },
     signOut() {
       this.isOpen = false;

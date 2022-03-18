@@ -2,8 +2,10 @@ import axios from "axios";
 import store from "../store";
 import Vue from "vue";
 
+import { url } from './app.json'
+
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000/api",
+    baseURL: url,
 });
 
 axiosInstance.interceptors.request.use((config) => {

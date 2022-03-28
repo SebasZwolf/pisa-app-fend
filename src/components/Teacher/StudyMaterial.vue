@@ -1,6 +1,6 @@
 <template>
   <div>
-    <StudentNavbar></StudentNavbar>
+    <TeacherNavbar></TeacherNavbar>
     <section>
       <div class="flex items-center bg-orange-light justify-between border-0">
         <p class="text-lg py-2.5 ml-4">Material de estudio</p>
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import StudentNavbar from "@/utils/StudentNavbar";
+import TeacherNavbar from "@/utils/TeacherNavbar";
 import ExamService from "@/services/ExamService";
 
 export default {
   name: "StudyMaterial",
-  components: { StudentNavbar },
+  components: { TeacherNavbar },
   data: () => ({
     areas: []
   }),
@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     goToCourseMaterial(areaId, color) {
-      this.$router.push({ name: 'course-material', params: { areaId: areaId, color: color }});
+      this.$router.push({ name: 'course-material-teacher', params: { areaId: areaId, color: color }});
     }
   }
 }

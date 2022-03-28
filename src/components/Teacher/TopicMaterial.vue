@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import StudentNavbar from "@/utils/StudentNavbar";
+import StudentNavbar from "@/utils/TeacherNavbar";
 import ExamService from "@/services/ExamService";
 import VuePdfApp from "vue-pdf-app";
 import "vue-pdf-app/dist/icons/main.css";

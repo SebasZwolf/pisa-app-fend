@@ -129,6 +129,7 @@
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Evaluaciones</p>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
           <div v-for="(area, index) of areas" v-bind:key="area.id">
             <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
@@ -140,20 +141,15 @@
               <template v-if="area.exams.length < 1">
                 No hay exámenes de esta área
               </template>
-              <template v-else>
-                <div class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto" v-for="exam of area.exams" :key="exam.id">
-                  <div class="text-left mx-3">
-<!--                    <i class="fas fa-stream"></i> lectura-->
-                    <i class="fas fa-calculator"></i> <!--matemática-->
-<!--                    <i class="fas fa-coins"></i> finanzas
-                    <i class="fas fa-atom"></i>ciencia-->
-                    {{ exam.name }}
-                  </div>
-                  <div class="text-right mx-3" v-if="new Date() >= new Date(exam.startDate) && new Date() <= new Date(exam.expirationDate)">
-                    <button class="button-secondary" @click="startExam(exam)">Comenzar examen</button>
-                  </div>
+              <div v-else class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto" v-for="exam of area.exams" :key="exam.id">
+                <div class="text-left mx-3"><!--<i class="fas fa-stream"></i> lectura-->
+                  <i class="fas fa-calculator"></i> <!--matemática--><!--<i class="fas fa-coins"></i> finanzas<i class="fas fa-atom"></i>ciencia-->
+                  {{ exam.name }}
                 </div>
-              </template>
+                <div class="text-right mx-3" v-if="new Date() >= new Date(exam.startDate) && new Date() <= new Date(exam.expirationDate)">
+                  <button class="button-secondary" @click="startExam(exam)">Comenzar examen</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -216,13 +212,9 @@ export default {
       this.areas[index].openGeneralReport = !this.areas[index].openGeneralReport;
     },
     getStudent() {
-      StudentService.getStudentsById(this.$store.getters.getUserId).then((response) => {
-        if (response.status === 200) {
-          this.student = response.data;
-        }
-      }).catch(() => {
-        this.$swal('Error', 'El servicio no está disponible', 'error');
-      })
+      StudentService.getStudentsById(this.$store.getters.getUserId).then( response => {
+        if (response.status === 200) this.student = response.data;
+      }).catch(() => this.$swal('Error', 'El servicio no está disponible', 'error'));
     },
     getAreas() {
       ExamService.getAreas().then((response) => {
@@ -245,10 +237,9 @@ export default {
     },
     getExams() {
       for (let area of this.areas) {
-        ExamService.getExamsByArea(area.id, this.student.classRoomId).then((response) => {
-          if (response.status === 200) {
-            area.exams = response.data;
-          }
+        ExamService.getExamsByArea(area.id, this.student.classRoomId ).then( response => {
+          console.log(response.data);
+          if (response.status === 200) area.exams = response.data;
         });
       }
     },

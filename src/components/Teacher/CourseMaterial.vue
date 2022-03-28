@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import StudentNavbar from "@/utils/StudentNavbar";
+import StudentNavbar from "@/utils/TeacherNavbar";
 import ExamService from "@/services/ExamService";
 import MaterialStudyService from "@/services/MaterialStudyService";
 
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     goToTopicMaterial(areaId, topic, color) {
-      this.$router.replace({ name: 'topic-material', params: { areaId: areaId, topic: topic, color: color }});
+      this.$router.replace({ name: 'topic-material-teacher', params: { areaId: areaId, topic: topic, color: color }});
     }
   }
 }

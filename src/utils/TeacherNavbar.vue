@@ -26,57 +26,69 @@
         </button>
       </div>
     </div>
-    <transition enter-class="opacity-0" enter-active-class="ease-out transition-medium" enter-to-class="opacity-100" leave-class="opacity-100" leave-active-class="ease-out transition-medium" leave-to-class="opacity-0">
+
+    <transition 
+      enter-class="opacity-0"
+      enter-active-class="ease-out transition-medium"
+      enter-to-class="opacity-100"
+      leave-class="opacity-100"
+      leave-active-class="ease-out transition-medium"
+      leave-to-class="opacity-0">
       <div @keydown.esc="isOpen = false" v-show="isOpen" class="z-10 fixed inset-0 transition-opacity">
         <div @click="isOpen = false" class="absolute inset-0 bg-black opacity-50" tabindex="0"></div>
       </div>
     </transition>
     <!-- buttons on left side -->
     <aside class="transform top-0 left-0 w-64 bg-orange-light fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30" :class="isOpen ? 'translate-x-0' : '-translate-x-full'">
+      
       <span @click="isOpen = false" class="flex w-full items-center p-4 border-b">
         <span class="text-3xl mx-auto cursor-pointer" @click="organization">
           <i class="fas fa-landmark"></i>
         </span>
       </span>
+
       <span @click="home" class="flex items-center p-4 hover:bg-white cursor-pointer">
         <span class="mr-2">
           <i class="fas fa-home"></i>
         </span>
         <span>Inicio</span>
       </span>
+
       <span @click="profile" class="flex items-center p-4 hover:bg-white cursor-pointer">
         <span class="mr-2">
           <i class="fas fa-user-circle"></i>
         </span>
         <span>Perfil</span>
       </span>
-      <span @click="isOpen = false" class="flex items-center p-4 hover:bg-white">
+
+      <span @click="material" class="flex items-center p-4 hover:bg-white cursor-pointer">
         <span class="mr-2">
           <i class="fas fa-book-open"></i>
         </span>
         <span>Material</span>
       </span>
-      <span @click="isOpen = false" class="flex items-center p-4 hover:bg-white">
+
+      <!--span @click="isOpen = false" class="flex items-center p-4 hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-file-alt"></i>
         </span>
         <span>Tests</span>
-      </span>
+      </span-->
+
       <span @click="isOpen = false" class="flex items-center p-4 md:hidden block hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-cog"></i>
         </span>
         <span>Configuración</span>
       </span>
+
       <span @click="signOut" class="flex items-center cursor-pointer p-4 md:hidden block hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-power-off"></i>
         </span>
         <span>Cerrar sesión</span>
       </span>
-      <!--<div class="fixed bottom-0 w-full">
-      Bottom buttons
-      </div>-->
+
     </aside>
   </nav>
 </template>
@@ -103,6 +115,9 @@ export default {
     },
     profile() {
       this.$router.push({ name: 'teacher-profile' });
+    },
+    material(){
+      this.$router.push({ name : 'study-material-teacher' })
     },
     signOut() {
       this.isOpen = false;

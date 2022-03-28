@@ -16,6 +16,7 @@ import FinishedExam from "@/components/Student/FinishedExam";
 import ThunderTestOptions from "@/components/ThunderTest/ThunderTestOptions";
 import ThunderTestResolution from "@/components/ThunderTest/ThunderTestResolution";
 import FinishedThunderTest from "@/components/ThunderTest/FinishedThunderTest";
+
 import StudyMaterial from "@/components/Student/StudyMaterial";
 import CourseMaterial from "@/components/Student/CourseMaterial";
 import TopicMaterial from "@/components/Student/TopicMaterial";
@@ -47,6 +48,10 @@ const routes = [
     { path: "/study-material", name: 'study-material', component: StudyMaterial },
     { path: "/study-material/:areaId", name: 'course-material', component: CourseMaterial, props: true },
     { path: "/study-material/:areaId/topic", name: 'topic-material', component: TopicMaterial, props: true },
+    // Study material teacher
+    { path: "/study-material", name: 'study-material-teacher', component: ()=>import("@/components/Teacher/StudyMaterial") },
+    { path: "/study-material/:areaId", name: 'course-material-teacher', component: ()=>import("@/components/Teacher/CourseMaterial"), props: true },
+    { path: "/study-material/:areaId/topic", name: 'topic-material-teacher', component: ()=>import("@/components/Teacher/TopicMaterial"), props: true },
 ]
 
 const router = new VueRouter({

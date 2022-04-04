@@ -15,6 +15,7 @@ import 'sweetalert2/dist/sweetalert2.min.css'; // SweetAlert2
 import es from 'vee-validate/dist/locale/es.json' // VeeValidate Localization es
 import { required, email, confirmed, min, alpha, required_if, max, alpha_spaces, min_value, max_value, alpha_num } from 'vee-validate/dist/rules'; // VeeValidate Rules
 import store from './store'; // Vuex Store
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 

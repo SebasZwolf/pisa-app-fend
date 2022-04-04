@@ -16,6 +16,7 @@
     "core-js": "^3.6.5",
     "dotenv": "^16.0.0",
     "jwt-decode": "^3.1.2",
+    "register-service-worker": "^1.7.1",
     "vee-validate": "^3.4.13",
     "vue": "^2.6.11",
     "vue-axios": "^3.3.7",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-pwa": "^4.5.17",
     "@vue/cli-service": "~4.5.0",
     "autoprefixer": "^9.8.8",
     "babel-eslint": "^10.1.0",
@@ -52,8 +54,8 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-constant-condition" : "warn",
-      "no-unused-vars" : "warn"
+      "no-constant-condition": "warn",
+      "no-unused-vars": "warn"
     }
   },
   "browserslist": [

@@ -36,7 +36,7 @@ export default {
   name: "ThunderTestOptions",
   methods: {
     startExam(area) {
-      ThunderTestService.startThunderTest({ student: 4, area: area }).then((response) => {
+      ThunderTestService.startThunderTest({ student: this.$store.getters.getUserId, area: area }).then((response) => {
         if (response.status === 201) {
           this.$router.push({ name: 'thunder-test-start', params: { areaId: area, questionInfo: response.data, num: '1' }});
         }

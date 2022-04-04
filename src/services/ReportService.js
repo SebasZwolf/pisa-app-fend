@@ -10,8 +10,16 @@ class ReportService {
     }
 
     async getGeneralReportByStudentIdAndAreaId(studentId, areaId) {
-        try {
+        try { 
             return axiosInstance.get(`/reports/areas/${areaId}/students/${studentId}`);
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async getGeneralReportByClassroomId(ClassroomId) {
+        try { 
+            return axiosInstance.get(`/reports/classrooms/${ClassroomId}`);
         } catch (error) {
             return error;
         }

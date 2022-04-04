@@ -21,6 +21,8 @@ import StudyMaterial from "@/components/Student/StudyMaterial";
 import CourseMaterial from "@/components/Student/CourseMaterial";
 import TopicMaterial from "@/components/Student/TopicMaterial";
 
+import SharedStudentProfile from "@/components/Shared/SharedStudentProfile"
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -52,6 +54,8 @@ const routes = [
     { path: "/study-material", name: 'study-material-teacher', component: ()=>import("@/components/Teacher/StudyMaterial") },
     { path: "/study-material/:areaId", name: 'course-material-teacher', component: ()=>import("@/components/Teacher/CourseMaterial"), props: true },
     { path: "/study-material/:areaId/topic", name: 'topic-material-teacher', component: ()=>import("@/components/Teacher/TopicMaterial"), props: true },
+    //
+    { path: "/student/:sid/profile", name:'one-student-profile', component: SharedStudentProfile, props: true }
 ]
 
 const router = new VueRouter({

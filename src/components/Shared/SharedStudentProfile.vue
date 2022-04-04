@@ -1,6 +1,7 @@
 <template>
   <div>
-    <StudentNavbar></StudentNavbar>
+    <component :is="navbar"></component>
+
     <section>
       <div class="flex items-center bg-orange-light justify-between border-0">
         <p class="text-lg py-2.5 ml-4">Perfil del estudiante</p>
@@ -137,7 +138,7 @@
           </div>
         </div>
 
-        <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
+        <!--div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Evaluaciones</p>
         </div>
 
@@ -153,8 +154,8 @@
                 No hay exámenes de esta área
               </template>
               <div v-else class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto" v-for="exam of area.exams" :key="exam.id">
-                <div class="text-left mx-3"><!--<i class="fas fa-stream"></i> lectura-->
-                  <i class="fas fa-calculator"></i> <!--matemática--><!--<i class="fas fa-coins"></i> finanzas<i class="fas fa-atom"></i>ciencia-->
+                <div class="text-left mx-3">
+                  <i class="fas fa-calculator"></i> 
                   {{ exam.name }}
                 </div>
                 <div class="text-right mx-3" v-if="new Date() >= new Date(exam.startDate) && new Date() <= new Date(exam.expirationDate)">
@@ -163,14 +164,14 @@
               </div>
             </div>
           </div>
-        </div>
+        </div-->
       </div>
     </section>
   </div>
 </template>
 
 <script>
-import StudentNavbar from "@/utils/StudentNavbar";
+//import StudentNavbar from "@/utils/StudentNavbar";
 import StudentService from "@/services/StudentService";
 import ExamService from "@/services/ExamService";
 import ReportService from "@/services/ReportService";
@@ -179,8 +180,18 @@ import LineChart from "@/utils/LineChart";
 
 export default {
   name: "StudentProfile",
-  components: { StudentNavbar, RadialProgressBar, LineChart },
+  props : {
+    sid : {
+      type : String,
+      required : true,
+    },
+  },
+  components: { 
+    RadialProgressBar,
+    LineChart
+  },
   data: () => ({
+    navbar : (h) => h('div'),
     student: {
       id: '',
       username: '',
@@ -223,7 +234,7 @@ export default {
       this.areas[index].openGeneralReport = !this.areas[index].openGeneralReport;
     },
     async getStudent() {
-      return await StudentService.getStudentsById(this.$store.getters.getUserId).then( response => {
+      return await StudentService.getStudentsById(+this.sid).then( response => {
         if (response.status === 200) this.student = response.data;
       }).catch(() => this.$swal('Error', 'El servicio no está disponible', 'error'));
     },
@@ -241,21 +252,13 @@ export default {
             f.generalReportData = 0;
           });
           this.areas = response.data;
-          this.getExams();
+          //this.getExams();
           this.getGeneralReport();
         }
       });
     },
-    getExams() {
-      console.log('cid', this.student.classRoomId);
-      for (let area of this.areas) {
-        ExamService.getExamsByArea(area.id, this.student.classRoomId ).then( response => {
-          if (response.status === 200) area.exams = response.data;
-        });
-      }
-    },
     getReports() {
-      ReportService.getReportsByStudentId(this.$store.getters.getUserId).then((response) => {
+      ReportService.getReportsByStudentId(this.sid).then((response) => {
         if (response.status === 200) {
           for (let report of response.data) {
             this.areas.find(a => a.id === report.areaId).report = report;
@@ -265,7 +268,7 @@ export default {
     },
     getGeneralReport() {
       for (let area of this.areas) {
-        ReportService.getGeneralReportByStudentIdAndAreaId(this.$store.getters.getUserId, area.id).then((response) => {
+        ReportService.getGeneralReportByStudentIdAndAreaId(this.sid, area.id).then((response) => {
           if (response.status === 200) {
             area.generalReport = {
               labels: Array.from(Array(response.data.length).keys(), i => i + 2),
@@ -283,37 +286,18 @@ export default {
         });
       }
     },
-    startExam(exam) {
-      this.$swal({
-        showCancelButton: true,
-        showConfirmButton: true,
-        confirmButtonText: 'Empezar evaluación',
-        cancelButtonText: 'Cancelar',
-        html: `<strong>Nombre de evaluación</strong>: ${exam.name}. <br>
-        <strong>Descripción</strong>: ${exam.description}. <br>
-        <strong>Duración</strong>: ${exam.duration} minutos. <br>
-        <strong>Inicio</strong>: ${new Date(exam.startDate).toLocaleString()} <br>
-        <strong>Vencimiento</strong>: ${new Date(exam.expirationDate).toLocaleString()}`,
-        title: 'Información de evaluación'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.$router.push({ name: 'student-exam', params: { id: exam.id }});
-        }
-      });
-    }
   },
   created() {
+    this.navbar = this.$store.getters.getUserRole === 'teacher' ? () => import('@/utils/TeacherNavbar') : () => import('@/utils/StudentNavbar');
     this.$store.dispatch('setToken');
     this.$store.dispatch('setUserId');
-    this.getStudent().then(()=>{
+    this.getStudent().then( () => {
       this.getAreas();
       this.getReports();
     })
   },
   computed: {
-    fullName: function () {
-      return this.student.firstName + ' ' + this.student.lastName;
-    }
+    fullName: function () { return this.student.firstName + ' ' + this.student.lastName; }
   }
 }
 </script>

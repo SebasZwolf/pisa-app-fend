@@ -4,9 +4,7 @@
       <div class="max-w-sm mx-auto my-10 bg-white border-2 border-orange shadow-2xl">
         <div class="text-center py-2 text-black-400 bg-orange">
           Prueba relámpago
-          <div class="bg-blue-500 px-1 border-2 shadow-lg">
-            {{ areaId }}
-          </div>
+          <div class="bg-blue-500 px-1 border-2 shadow-lg">"Dificultad : "{{Math.min(Math.ceil(num / 5), 3)}}</div>
         </div>
         <div class="m-3">
           <div class="grid border-b-2 border-dashed my-3 border-orange-light">
@@ -43,19 +41,31 @@ import ThunderTestService from "@/services/ThunderTestService";
 export default {
   name: "ThunderTestResolution",
   props: ['areaId', 'questionInfo', 'num'],
-  components: {RadialProgressBar},
+  components: { RadialProgressBar },
+  computed : {
+  },
   methods: {
     verifyAnswer(alternativeId) {
       const data = {
-        questionId: this.questionInfo.nextQuestion.id,
-        alternativeId: alternativeId
+        questionId    : this.questionInfo.nextQuestion.id,
+        alternativeId : alternativeId,
+        iteration     : +this.num
       }
-      ThunderTestService.verifyThunderTest(this.questionInfo.id, data).then((response) => {
+
+      ThunderTestService.verifyThunderTest(this.questionInfo.id, data).then( response => {
+
         if (response.status === 201) {
-          if (response.data.failed) {
-            this.$router.push({ name: 'thunder-test-finish', params: { areaId: this.areaId, num: this.num }});
-          } else {
-            this.$router.push({ name: 'thunder-test-start', params: { areaId: this.areaId, questionInfo: response.data, num: (Number(this.num)+1).toString()}});
+          if (response.data.failed) 
+            this.$router.replace({ name: 'thunder-test-finish', params: { areaId: this.areaId, num: this.num, msg : response.data.message }});
+          else {
+            this.$router.replace({ 
+              name: 'thunder-test-start',
+              params: { 
+                areaId: this.areaId,
+                questionInfo: response.data,
+                num: (Number(this.num) + 1).toString()}
+              }
+            );
           }
         }
       });

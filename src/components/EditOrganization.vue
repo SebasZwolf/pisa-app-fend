@@ -215,9 +215,7 @@ export default {
                   this.getTeachers();
                   this.$swal('Éxito', 'Profesor ha sido creado correctamente', 'success');
                 }
-              }).catch(() => {
-                return this.$swal.showValidationMessage("Error al crear profesor");
-              });
+              }).catch(r => this.$swal(r.response.data.message));
             }
           }).catch(() => {
             this.$swal.showValidationMessage("Rellene todos los campos necesarios")
@@ -349,7 +347,7 @@ export default {
                 this.getClassrooms();
               });
             }
-          });
+          }).catch(()=>this.$swal('Error', 'no se pueden eliminar aulas con alumnos registrados'));
         }
       });
     },
@@ -386,23 +384,18 @@ export default {
           formHandlers.mountVueComponents(StudentForm, 'new', this.$store.getters.getEducationalInstitution);
         },
         preConfirm: () => {
-          return formHandlers.getFormInstance().getValidation().then((validation) => {
-            if (!validation) {
-              throw new Error('not-required');
-            } else {
+          return formHandlers.getFormInstance().getValidation().then( validation => {
+            if (!validation) throw new Error('not-required');
+            else {
               const data = formHandlers.destroyVueComponent();
-              StudentService.createStudent(data).then((response) => {
+              StudentService.createStudent(data).then( response => {
                 if (response.status === 201) {
                   this.getStudents();
                   this.$swal('Éxito', 'Alumno ha sido creado correctamente', 'success');
                 }
-              }).catch(() => {
-                return this.$swal.showValidationMessage("Error al crear profesor");
-              });
+              }).catch(r => this.$swal(r.response.data.message));
             }
-          }).catch(() => {
-            this.$swal.showValidationMessage("Rellene todos los campos necesarios")
-          });
+          }).catch(() => this.$swal.showValidationMessage("Rellene todos los campos necesarios"));
         },
         allowOutsideClick: () => !this.$swal.isLoading()
       });

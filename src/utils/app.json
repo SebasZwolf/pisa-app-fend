@@ -1,3 +1,5 @@
 {
-    "url" : "http://localhost:3000/api"
+    "_url" : "http://localhost:5000/api",
+    "__url" : "http://localhost:5000/masteri1/us-central1/api/api",
+    "url" : "https://test-exp-masteri.herokuapp.com/api"
 }

@@ -10,21 +10,19 @@
           <p class="text-md py-2 ml-3">Evaluaciones pendientes</p>
           <button class="button-secondary m-1.5" @click="goToProfile">Ir a perfil</button>
         </div>
+
         <template v-if="exams.length < 1">
           <span class="ml-4">No hay exámenes disponibles por el momento</span>
         </template>
         <template v-else>
           <div v-for="exam of exams" v-bind:key="exam.id">
             <div class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto">
-              <div class="text-left mx-3">
-                {{ exam.name }}
-              </div>
-              <div class="text-right mx-3">
-                {{ exam.startDate | moment("calendar") }}
-              </div>
+              <div class="text-left mx-3" v-text="exam.name"></div>
+              <div class="text-right mx-3">{{ exam.startDate | moment("calendar") }}</div>
             </div>
           </div>
         </template>
+
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Pizarra</p>
         </div>

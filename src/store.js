@@ -18,7 +18,7 @@ export default new Vuex.Store({
             state.userId = newUserId
         },
         setUserRole(state, newUserRole) {
-            state.userRole = newUserRole
+            state.userRole = newUserRole;
         },
         setEducationalInstitution(state, newEducationalInstitution) {
             state.educationalInstitution = newEducationalInstitution;

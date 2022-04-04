@@ -9,6 +9,9 @@
           <div class="text-center font-bold text-xl">
             Prueba terminada
           </div>
+          <div class="text-center font-bold text-xl">
+            {{this.msg}}
+          </div>
           <div class="flex border-b-2 border-dashed my-3 border-orange-light justify-center">
             <radial-progress-bar :diameter="150"
                                  :completed-steps="Number(num)"
@@ -38,7 +41,7 @@ import RadialProgressBar from "vue-radial-progress";
 export default {
   name: "FinishedThunderTest",
   components: {RadialProgressBar},
-  props: ['areaId', 'num'],
+  props: ['areaId', 'num','msg'],
   methods: {
     startOver() {
       this.$router.push({ name: 'thunder-test' });

@@ -11,7 +11,7 @@ class ExamService {
 
     async getExamsByArea(areaId, classroomId) {
         try {
-            return axiosInstance.get('/exams', { params: { area: areaId, classRoom: classroomId}})
+            return axiosInstance.get('/exams', { params: { area: areaId, classRoom: classroomId }})
         } catch (error) {
             return error;
         }

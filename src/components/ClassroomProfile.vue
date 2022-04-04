@@ -49,39 +49,115 @@
               {{ exam.name }}
             </div>
             <div class="text-right mx-3">
-              {{ exam.expirationDate | moment("calendar") }}
+              {{ exam.startDate | moment("calendar") }}
             </div>
           </div>
         </div>
         <div class="flex items-center justify-between border-b-2 border-dashed mx-1 my-3 border-orange-light">
           <p class="text-md py-2 ml-3">Alumnos del aula</p>
         </div>
+
+        <div class="mx-4">
+          <input class="py-0" type="text" name="" id="" placeholder="filtre por nombre" pattern="^[a-zA-Z ]{0,}$"
+          @input="filterStudents($event.target.value)">
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3">
-          <div class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto" v-for="student of students" :key="student.id">
+          <button
+            class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto"
+            v-for="student of students_filtered" :key="student.id"
+            @click="$router.push({ name : 'one-student-profile', params : { sid : student.id }})">
             <div class="w-full text-center">
               {{ student.firstName }} {{ student.lastName }}
             </div>
-          </div>
+          </button>
         </div>
+
         <div class="flex items-center justify-between border-b-2 border-dashed mx-1 my-3 border-orange-light">
           <p class="text-md py-2 ml-3">Reportes</p>
         </div>
+
+
+
+        <button v-if="!showingReports" @click="GenerarReporte" style="display: block;" class="mx-auto px-6 py-2 bg-orange-light border-2 border-solid border-orange-dark cursor-pointer" >Generar</button>
+        <div v-else class="grid grid-cols-1 md:grid-cols-1 mb-5">
+          <div v-for="(area, index) of areas" v-bind:key="index">
+            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+              {{ area.name }}
+              <button @click="AreaReportChange(index)" :hidden="!area.open"><i class="fas fa-chevron-up"></i></button>
+              <button @click="AreaReportChange(index)" :hidden="area.open"><i class="fas fa-chevron-down"></i></button>
+            </div>
+
+            <div v-show="area.open" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
+              <template v-if="area.reporte == null">
+                No hay reportes de esta área. Realice evaluaciones para obtener reportes.
+              </template>
+              <template v-else>
+
+                <div class="grid grid-cols-3">
+                  <div class="flex justify-center my-2">
+                    <radial-progress-bar 
+                      :diameter="150"
+                      :completed-steps="area.score"
+                      :total-steps="area.score_objective">
+                      Nivel alcanzado<br>
+                      <strong>{{ area.score.toFixed(2) }}/{{ area.score_objective }}</strong>
+                    </radial-progress-bar>
+                  </div>
+
+                  <div class="justify-center my-2">
+                    <div 
+                      v-for="(d, i) in area.msg" :key="i"
+                      class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-white block hover:bg-gray-400 my-auto cursor-pointer"
+                      @click="searchForStudents(d)">
+                      <div class="text-left mx-3">
+                        <span v-text="d.title"></span><br>
+                        
+                        <span v-if="d.display==='num'">{{d.value}}/{{d.second_value}}</span>
+                        <span v-if="d.display==='pro'">{{d.value}}%</span>
+                        <span v-if="d.display==='str'">{{d.value}}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="my-2 ">
+                    <div class="bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg ">
+                      <line-chart v-if="area.reporte != null" :chartdata="area.reporte" :options="options"></line-chart>
+                    </div>
+                  </div>
+
+                  
+
+                </div>
+              </template>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </section>
   </div>
 </template>
 
 <script>
-import TeacherNavbar from "@/utils/TeacherNavbar";
-import formHandlers from "@/utils/formHandlers";
-import EvaluationForm from "@/utils/forms/EvaluationForm";
-import ExamService from "@/services/ExamService";
-import ClassroomService from "@/services/ClassroomService";
-import StudentService from "@/services/StudentService";
+import TeacherNavbar      from "@/utils/TeacherNavbar";
+import formHandlers       from "@/utils/formHandlers";
+import EvaluationForm     from "@/utils/forms/EvaluationForm";
+import ExamService        from "@/services/ExamService";
+import ClassroomService   from "@/services/ClassroomService";
+import StudentService     from "@/services/StudentService";
+import RadialProgressBar  from "vue-radial-progress";
+import ReportService      from "@/services/ReportService";
+import LineChart from "@/utils/LineChart";
+
+const helpers = {
+  filter_update : 0,
+}
 
 export default {
   name: "ClassroomProfile",
-  components: { TeacherNavbar },
+  components: { TeacherNavbar, RadialProgressBar, LineChart },
   props: [
       'id'
   ],
@@ -92,9 +168,101 @@ export default {
       description: ''
     },
     exams: [],
-    students: []
+    students: [],
+    students_filtered : [],
+    areas : [
+      { open : false, score : 0, score_objective : 1, msg : [], reporte : null, name : 'matematica',             },
+      { open : false, score : 0, score_objective : 1, msg : [], reporte : null, name : 'ciencias',               },
+      { open : false, score : 0, score_objective : 1, msg : [], reporte : null, name : 'lectura',                },
+      { open : false, score : 0, score_objective : 1, msg : [], reporte : null, name : 'educación financiera',   },
+    ],
+    showingReports : false,
+    options : {
+      responsive: true,
+      aspectRatio: 1,
+      scales: {
+        xAxes: [{
+          gridLines: { display: false }
+        }],
+        yAxes: [{
+          ticks: {
+            min: 0, max: 100, callback: value => value + '%',
+          }
+        }],
+      } 
+    }
   }),
+  computed : {
+    //options : () => (),
+  },
   methods: {
+    searchForStudents( d ){
+      switch (d.type){
+        case 'grp':
+          this.students_filtered = this.students.filter( s => d.user.includes(s.id));
+          break;
+        case 'ind':
+          this.students_filtered = this.students.filter( s => d.user === s.id);
+          break;
+      }
+    },
+    filterStudents( v ){
+      clearTimeout(helpers.filter_update);
+      helpers.filter_update = setTimeout(()=>{
+        const val = v.trim().toUpperCase();
+        if(val === '') return this.students_filtered = this.students;
+
+        console.log('FILTERING');
+        this.students_filtered = this.students.filter( s =>  (s.firstName + s.lastName).toUpperCase().includes(val));
+      }, 500);
+
+    },
+    AreaReportChange(index){
+      //console.log(index, this.areas[index].open);
+      this.areas[index].open = !this.areas[index].open;
+    },
+    GenerarReporte(){
+      this.$swal({
+        html: '<div><h1>¿Esta seguro?</h1><p>esta acción puede tardar unos minutos, no continue si no esta seguro de que desea solicitar un reporte</p></div>',
+        showCancelButton:   true,
+        showConfirmButton:  true,
+        confirmButtonText:  'Aceptar',
+        cancelButtonText:   'Cancelar',
+        showLoaderOnConfirm:true,
+        preConfirm : () =>{
+          ReportService.getGeneralReportByClassroomId(this.id).then( response => {
+            if (response.status !== 200) this.$swal.showValidationMessage("Error al generar reporte");
+            if ( response.data.includes(null))
+              this.$swal('Éxito', 'se han generado reportes; sin embargo, puede que algunos esten vacios por falta de registros', 'success');
+            else
+              this.$swal('Éxito', 'se han generado reportes', 'success');
+            
+            for( const el of response.data) {
+              if (el === null) continue;
+
+              this.areas[el.areaId - 1].score = el.score;
+              this.areas[el.areaId - 1].score_objective = el.score_objective;
+              this.areas[el.areaId - 1].msg = el.details;
+              
+              this.areas[el.areaId - 1].reporte = {
+                labels: Array.from(Array(el.grades.length).keys(), i => i + 1),
+                datasets : [
+                  {
+                    label: 'Evolución de rendimiento',
+                    backgroundColor: '#663300',
+                    data: el.grades,
+                  }
+                ]
+              };
+            }
+
+            this.showingReports = true;
+          }).catch(() => this.$swal.showValidationMessage("Error al generar reporte"));
+
+          return true;
+        }
+      });
+    },
     getClassroom() {
       ClassroomService.getClassroomById(this.id).then((response) => {
         if (response.status === 200) {
@@ -116,7 +284,8 @@ export default {
     getStudents() {
       StudentService.getStudentsByClassroom(this.id).then((response) => {
         if (response.status === 200) {
-          this.students = response.data
+          this.students = response.data;
+          this.students_filtered = response.data;
         }
       }).catch(() => {
         this.$swal('Error', 'El servicio no está disponible', 'error');
@@ -166,7 +335,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

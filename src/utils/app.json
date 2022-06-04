@@ -1,7 +1,7 @@
 {
-    "url" : "http://localhost:3000/api",
+    "_url" : "http://localhost:3000/api",
     "__url" : "http://localhost:5000/masteri1/us-central1/api/api",
     "___url" : "https://test-exp-masteri.herokuapp.com/api",
     "____url" : "https://masteri-deploy.herokuapp.com/api",
-    "_url" : "https://us-central1-masteri1.cloudfunctions.net/api/api"
+    "url" : "https://us-central1-masteri1.cloudfunctions.net/api/api"
 }

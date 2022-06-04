@@ -66,21 +66,24 @@
           <p class="text-md py-2 ml-3">Reportes generales</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-5 max-w-5xl mx-auto">
           
           <div v-for="(area, index) of areas" v-bind:key="area.id">
-            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+            <div class="mx-5 mt-3 text-xl font-medium bg-opacity-50 hover:bg-opacity-100 duration-300 p-3 rounded-lg rounded-b-none flex justify-between" :class="['bg-' + colors[area.id - 1] ]">
               {{ area.name }}
               <button @click="changeGeneralReportsAccordionStatus(index)" :hidden="!area.openGeneralReport"><i class="fas fa-chevron-up"></i></button>
               <button @click="changeGeneralReportsAccordionStatus(index)" :hidden="area.openGeneralReport"><i class="fas fa-chevron-down"></i></button>
             </div>
 
-            <div v-show="area.openGeneralReport" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
-              <template v-if="area.generalReportData < 1">
-                No hay reporte general de esta área
-              </template>
+            <div v-show="area.openGeneralReport" class="mx-5 bg-opacity-50 p-3 pt-1 rounded-b-lg" :class="['bg-' + colors[area.id - 1] ]">
+              <template v-if="area.generalReportData < 1">No hay reporte general de esta área</template>
               <template v-else>
-                <line-chart v-if="area.generalReportLoaded" :chartdata="area.generalReport" :options="options"></line-chart>
+                <div>
+                <line-chart v-if="area.generalReportLoaded" :chartdata="area.generalReport" :options="Object.assign(options, {  })"></line-chart>
+                </div>
+                <div class="max-h-56 overflow-y-auto">
+                  <div v-for="(msg, i) in area.msgs" :key="i" v-html="msg" class="mb-4 bg-gray-100 p-2"></div>
+                </div>
               </template>
             </div>
           </div>
@@ -91,14 +94,14 @@
           <p class="text-md py-2 ml-3">Reportes thunder-test</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-5  max-w-5xl mx-auto">
           <div v-for="(area, index) of areas" v-bind:key="area.id">
-            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+            <div class="mx-5 mt-3 text-xl font-medium bg-opacity-50 hover:bg-opacity-100 duration-300 p-3 rounded-lg rounded-b-none flex justify-between" :class="['bg-' + colors[area.id - 1] ]">
               {{ area.name }}
               <button @click="changeReportsAccordionStatus(index)" :hidden="!area.openReport"><i class="fas fa-chevron-up"></i></button>
               <button @click="changeReportsAccordionStatus(index)" :hidden="area.openReport"><i class="fas fa-chevron-down"></i></button>
             </div>
-            <div v-show="area.openReport" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
+            <div v-show="area.openReport" class="mx-5 bg-opacity-50 p-3 pt-1 rounded-b-lg" :class="['bg-' + colors[area.id - 1] ]">
               <template v-if="area.report.thunderTestQuantity < 1">
                 No hay reportes de esta área. Realice evaluaciones para obtener reportes.
               </template>
@@ -138,7 +141,8 @@
           </div>
         </div>
 
-        <!--div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
+        <template v-if="false">
+        <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Evaluaciones</p>
         </div>
 
@@ -164,7 +168,9 @@
               </div>
             </div>
           </div>
-        </div-->
+        </div>
+
+        </template>
       </div>
     </section>
   </div>
@@ -177,6 +183,8 @@ import ExamService from "@/services/ExamService";
 import ReportService from "@/services/ReportService";
 import RadialProgressBar from "vue-radial-progress";
 import LineChart from "@/utils/LineChart";
+
+import { colors } from '@/utils/colors.json'
 
 export default {
   name: "StudentProfile",
@@ -191,7 +199,7 @@ export default {
     LineChart
   },
   data: () => ({
-    navbar : (h) => h('div'),
+    navbar : h => h('div'),
     student: {
       id: '',
       username: '',
@@ -209,15 +217,18 @@ export default {
         xAxes: [{
           gridLines: {
             display: false
+          },
+          ticks : {
+            autoSkip: false,
+            maxRotation: 45,
+            minRotation: 45
           }
         }],
         yAxes: [{
           ticks: {
             min: 0,
             max: 100,
-            callback: function(value) {
-              return value + '%';
-            }
+            callback: value => value + '%',
           }
         }]
       }
@@ -241,6 +252,9 @@ export default {
     getAreas() {
       ExamService.getAreas().then((response) => {
         if (response.status === 200) {
+          response.data.sort((a,b) => a.id - b.id);
+          //response.data = response.data.sort( (a,b) => a.id > b.id );
+
           response.data.forEach(f => {
             f.open = false;
             f.openReport = false;
@@ -267,24 +281,34 @@ export default {
       });
     },
     getGeneralReport() {
-      for (let area of this.areas) {
-        ReportService.getGeneralReportByStudentIdAndAreaId(this.sid, area.id).then((response) => {
-          if (response.status === 200) {
-            area.generalReport = {
-              labels: Array.from(Array(response.data.length).keys(), i => i + 2),
-              datasets: [
-                {
-                  label: 'Evolución de rendimiento',
-                  backgroundColor: '#663300',
-                  data: response.data.map(a => a.percentage)
-                }
-              ]
-            }
-            area.generalReportLoaded = true;
-            area.generalReportData = response.data.length;
-          }
-        });
-      }
+      ReportService.getGenRepStudent(this.sid).then( res => {
+        if (res.status != 200) return;
+        console.log(res.data);
+        for (const r of res.data){
+          const area = this.areas[r.area_id -1];
+
+          area.generalReport = {
+            labels: r.dates.map( d => d.split('T')[0]),
+            datasets: [
+              {
+                label: 'Evolución de rendimiento',
+                backgroundColor: ['#27e','#2e2','#ed2','#e62'][r.area_id - 1],
+                data: r.grades.map( g => g.toFixed(2)),
+              }
+            ]
+          };
+          area.generalReportLoaded = true;
+          area.generalReportData = r.grades.length;
+          area.msgs = [];
+
+          area.msgs = area.msgs.concat(r.failes.map( t => `${new Date(t.time).toISOString().split('T')[0]}<br> tiene problemas en <strong>${
+            Object.entries(t.topics.reduce( (p, c) => Object.assign(p, { [c.name] : c in p ? p[c.name] + 1 : 1 }), {})).map( ([k,v]) => `${k}(${v})`).join(', ')
+            }</strong>`));
+          area.msgs = area.msgs.concat(r.succes.map( t => `${new Date(t.time).toISOString().split('T')[0]}<br> sobresaliente en <strong>${
+            Object.entries(t.topics.reduce( (p, c) => Object.assign(p, { [c.name] : c in p ? p[c.name] + 1 : 1 }), {})).map( ([k,v]) => `${k}(${v})`).join(', ')
+            }</strong>`));
+        }
+      })
     },
   },
   created() {
@@ -297,7 +321,8 @@ export default {
     })
   },
   computed: {
-    fullName: function () { return this.student.firstName + ' ' + this.student.lastName; }
+    fullName: function () { return this.student.firstName + ' ' + this.student.lastName; },
+    colors : () => colors,
   }
 }
 </script>

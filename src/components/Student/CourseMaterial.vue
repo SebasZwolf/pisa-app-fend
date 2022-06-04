@@ -11,7 +11,7 @@
         <div class="my-2 grid grid-cols-1 md:grid-cols-3 ml-2 gap-2">
 
         <div class="bg-gray-300 pl-4 py-1 border-l-2 border-red-400 cursor-pointer" 
-             @click="goToTopicMaterial(areaId, material, color)"
+             @click="goToTopicMaterial( areaId, material )"
              v-for="material of topic.materials" :key="material.id">
           {{ material.name }}
         </div>
@@ -28,33 +28,31 @@ import StudentNavbar from "@/utils/StudentNavbar";
 import ExamService from "@/services/ExamService";
 import MaterialStudyService from "@/services/MaterialStudyService";
 
+import { colors } from "@/utils/colors.json"
+
 export default {
   name: "CourseMaterial",
   components: { StudentNavbar },
-  props: ['areaId', 'color'],
+  props: ['areaId'],
   data: () => ({
     area: {},
     topics: [],
   }),
   created() {
+    this.color = colors[this.areaId - 1];
     this.$store.dispatch('setToken');
     this.$store.dispatch('setUserId');
-    ExamService.getAreas().then((response) => {
-      this.area = response.data.find(a => a.id === this.areaId);
-    });
-    MaterialStudyService.getTopicsByAreaId(this.areaId).then((response) => {
+    ExamService.getAreas().then(response => this.area = response.data.find(a => a.id === this.areaId));
+
+    MaterialStudyService.getTopicsByAreaId(this.areaId).then(response => {
       response.data.forEach(f => f.materials = []);
       this.topics = response.data;
-      for (let topic of this.topics) {
-        MaterialStudyService.getStudyMaterialByTopicId(topic.id).then((response) => {
-          topic.materials = response.data;
-        });
-      }
+      for (let topic of this.topics) MaterialStudyService.getStudyMaterialByTopicId(topic.id).then( response => topic.materials = response.data);
     });
   },
   methods: {
-    goToTopicMaterial(areaId, topic, color) {
-      this.$router.replace({ name: 'topic-material', params: { areaId: areaId, topic: topic, color: color }});
+    goToTopicMaterial(areaId, topic) {
+      this.$router.replace({ name: 'topic-material', params: { areaId: areaId, topic: topic }});
     }
   }
 }

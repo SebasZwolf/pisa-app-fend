@@ -43,6 +43,7 @@
               <div class="mb-6">
                 <button @click="login" type="button" :disabled="invalid" :class="invalid ? 'button-primary-disabled w-full my-3' : 'button-primary w-full my-3'">Ingresar</button>
               </div>
+              <input type="submit" hidden />
             </form>
           </ValidationObserver>
           <div class="mb-6 text-center underline">

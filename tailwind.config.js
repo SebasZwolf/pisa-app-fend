@@ -1,16 +1,26 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  purge: [
-    './public/**/*.html',
-    './src/**/*.{js,jsx,ts,tsx,vue}',
-  ],
+  purge: {
+    content : [
+      './public/**/*.html',
+      './src/**/*.{js,jsx,ts,tsx,vue}',
+    ],
+    options : {
+      safelist : [
+        'bg-golden-400'
+      ]
+    }
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       lineHeight: {
         'extra-snug': '1.450'
       },
+      colors : {
+        golden : colors.orange,
+      }
     },
     colors: {
       transparent: 'transparent',

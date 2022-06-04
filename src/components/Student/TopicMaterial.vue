@@ -23,15 +23,18 @@ import VuePdfApp from "vue-pdf-app";
 import "vue-pdf-app/dist/icons/main.css";
 import MaterialStudyService from "@/services/MaterialStudyService";
 
+import { colors } from "@/utils/colors.json"
+
 export default {
   name: "TopicMaterial",
   components: { StudentNavbar, VuePdfApp },
-  props: ['areaId', 'topic', 'color'],
+  props: ['areaId', 'topic'],
   data: () => ({
     area: {},
     pdfBuffer: '',
   }),
   created() {
+    this.color = colors[this.areaId - 1];
     this.$store.dispatch('setToken');
     this.$store.dispatch('setUserId');
     ExamService.getAreas().then((response) => {

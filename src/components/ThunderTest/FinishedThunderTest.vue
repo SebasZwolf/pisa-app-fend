@@ -3,7 +3,7 @@
     <div class="container mx-auto">
       <div class="max-w-sm mx-auto my-10 bg-white border-2 border-orange shadow-2xl">
         <div class="text-center py-2 text-black-400 bg-orange">
-          Prueba relámpago
+          Test Relámpago
         </div>
         <div class="m-3">
           <div class="text-center font-bold text-xl">

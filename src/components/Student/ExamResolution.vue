@@ -8,14 +8,16 @@
       </div>
       <div>
         <div class="grid border-b-2 border-dashed my-3 border-orange-light">
-          <countdown :time="exam.duration*60*1000" auto-start class="mb-3 md:ml-3 justify-self-center">
-            <template slot-scope="props">
-              <radial-progress-bar :diameter="200"
-                                   :completed-steps="(60*exam.duration-props.totalSeconds)"
-                                   :total-steps="exam.duration*60">
-                Tiempo restante: <br> <strong>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</strong>
-              </radial-progress-bar>
-            </template>
+          <countdown @end="timeout" :time="exam.duration*60*1000" auto-start class="mb-3 md:ml-3 justify-self-center" v-slot="props">
+            <radial-progress-bar 
+              :diameter="200"
+              :completed-steps="(60*exam.duration-props.totalSeconds)"
+              :total-steps="exam.duration*60"
+              :startColor ="currentColor(exam.duration * 60, props.totalSeconds)"
+              :stopColor  ="currentColor(exam.duration * 60, props.totalSeconds)"
+              >
+              Tiempo restante: <br> <strong>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</strong>
+            </radial-progress-bar>
           </countdown>
         </div>
         <div>
@@ -57,13 +59,31 @@ export default {
     ExamService.startExam(this.id).then((response) => {
       if (response.status === 200) {
         response.data.questions.forEach(f => {
-          f.picked = ''
+          f.picked = null
         });
         this.exam = response.data;
       }
     });
   },
   methods: {
+    timeout : function(){
+      //s
+      if(this.exam.questions.length === 0) return;
+      let array = this.exam.questions.map( q => ({
+        questionId : q.id,
+        alternativeId : q.picked ?? -1,
+      }))
+
+      ExamService.finishExam(this.$store.getters.getUserId, this.id, array).then(response => {
+        if (response.status === 201) {
+          this.$router.push({ name: 'student-exam-finish', params: { finishedExam: response.data }});
+        }
+      }).catch(() => {
+        this.$swal('Error', 'El servicio no está disponible', 'error');
+      });
+      //s
+    },
+    currentColor : (t, r) =>['#f66','#dd6','#6f6','#6f6'][Math.floor(4 * r  / t )],
     onResize() {
       this.windowWidth = window.innerWidth
     },
@@ -76,7 +96,7 @@ export default {
         title: '¿Estás seguro?',
         text: 'No podrás cambiar tus respuestas',
         icon: 'info'
-      }).then((result) => {
+      }).then(result => {
         if (result.isConfirmed) {
           let array = [];
           for (let question of this.exam.questions) {

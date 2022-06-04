@@ -14,7 +14,16 @@
             <button @click="changeAccordionStatus(index)" :hidden="classroom.open"><i class="fas fa-chevron-down"></i></button>
           </div>
           <div v-show="classroom.open" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
-            {{ classroom.description }}
+            <div><p class="pl-2" v-text="classroom.description"></p></div>
+            <div>
+              <h3><strong>Profesores</strong></h3>
+              <p class="pl-2" v-text="classroom.teachers.map( t => t.firstName + t.lastName ).join(', ')"></p>
+            </div>
+            <div>
+              <h3><strong>Alumnos</strong></h3>
+              <p class="pl-2" v-text="classroom.students.map( e => e.firstName + e.lastName ).join(', ')"></p>
+            </div>
+              
           </div>
         </div>
       </div>
@@ -37,7 +46,8 @@ export default {
       this.$router.push({ name: 'edit-organization' });
     },
     getClassrooms() {
-      ClassroomService.getClassroomByInstitution(this.$store.getters.getEducationalInstitution).then((response) => {
+      ClassroomService.getClassroomByInstitution(this.$store.getters.getEducationalInstitution).then(response => {
+        console.log(response.data);
         if (response.status === 200) {
           response.data.forEach(f => f.open = false);
           this.classrooms = response.data;

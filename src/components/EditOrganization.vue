@@ -9,7 +9,7 @@
       <div> <!-- Teachers table -->
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Docentes</p>
-          <button @click="newTeacherModal" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
+          <button @click="newTeacherModal" class="text-right font-bold text-sm mr-5 rounded px-1.5 hover:bg-orange-light">Agregar Docente</button>
         </div>
         <div class="md:mx-10 my-4 mx-0">
           <table class="table-fixed w-full">
@@ -39,7 +39,7 @@
       <div> <!-- Students table -->
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Alumnos</p>
-          <button @click="newStudentModal" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
+          <button @click="newStudentModal" class="text-right font-bold text-sm mr-5 rounded px-1.5 hover:bg-orange-light">Agregar Alumno</button>
         </div>
         <div class="md:mx-10 my-4 mx-0">
           <table class="table-fixed w-full">
@@ -71,7 +71,7 @@
       <div> <!-- Classrooms table -->
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Aulas</p>
-          <button @click="newClassroomModal" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
+          <button @click="newClassroomModal" class="text-right font-bold text-sm mr-5 rounded px-1.5 hover:bg-orange-light">Agregar Aula</button>
         </div>
         <div class="md:mx-10 my-4 mx-0">
           <table class="table-fixed w-full">
@@ -316,9 +316,11 @@ export default {
             } else {
               const data = formHandlers.destroyVueComponent();
               data.educationalInstitution = Number(this.$store.getters.getEducationalInstitution);
-              ClassroomService.editClassroom(data, classroom.id).then((response) => {
-                if (response.status === 201) {
+              ClassroomService.editClassroom(data, classroom.id)
+              .then(response => {
+                if (response.status === 200) {
                   this.getClassrooms();
+                  console.log('editaula: ', response.data);
                   this.$swal('Éxito', `El aula ha sido modificada correctamente`, 'success');
                 }
               }).catch(() => {

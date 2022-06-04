@@ -1,6 +1,6 @@
 <template>
   <div>
-    <StudentNavbar></StudentNavbar>
+    <Navbar></Navbar>
     <section>
       <div class="flex items-center justify-between border-0" :class="'bg-'+color">
         <p class="text-lg py-2.5 ml-4">{{ area.name }}</p>
@@ -17,33 +17,30 @@
 </template>
 
 <script>
-import StudentNavbar from "@/utils/TeacherNavbar";
+import Navbar from "@/utils/TeacherNavbar";
 import ExamService from "@/services/ExamService";
 import VuePdfApp from "vue-pdf-app";
 import "vue-pdf-app/dist/icons/main.css";
 import MaterialStudyService from "@/services/MaterialStudyService";
 
+import { colors } from "@/utils/colors.json"
+
 export default {
   name: "TopicMaterial",
-  components: { StudentNavbar, VuePdfApp },
-  props: ['areaId', 'topic', 'color'],
+  components: { Navbar, VuePdfApp },
+  props: ['areaId', 'topic'],
   data: () => ({
     area: {},
     pdfBuffer: '',
   }),
   created() {
+    this.color = colors[this.areaId - 1];
+    console.log(this.areaId);
     this.$store.dispatch('setToken');
     this.$store.dispatch('setUserId');
-    ExamService.getAreas().then((response) => {
-      this.area = response.data.find(a => a.id === this.areaId);
-    });
+    ExamService.getAreas().then( response => this.area = response.data.find(a => a.id === this.areaId));
     MaterialStudyService.getFileByStudyMaterialId(this.topic.id).then( response => {
-      //console.log({...response});
-
-      if (response.status === 200) {
-        const blob = new Blob([response.data]);
-        this.pdfBuffer = URL.createObjectURL(blob);
-      }
+      if (response.status === 200) this.pdfBuffer = URL.createObjectURL(new Blob([response.data]));
     });
   },
   methods: {

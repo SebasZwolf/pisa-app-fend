@@ -24,6 +24,14 @@ class ReportService {
             return error;
         }
     }
+
+    async getGenRepStudent(studentId) {
+        try { 
+            return axiosInstance.get(`/reports/students/${studentId}/all`);
+        } catch (error) {
+            return error;
+        }
+    }
 }
 
 export default new ReportService();

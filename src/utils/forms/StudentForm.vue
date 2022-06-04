@@ -3,9 +3,7 @@
     <ValidationObserver v-slot="{ invalid }" ref="form">
       <form @submit.prevent="getResult" class="grid grid-cols-1 md:grid-cols-2 md:gap-1.5">
         <div> <!-- firstName -->
-          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">
-            Nombre
-          </label>
+          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Nombre</label>
           <ValidationProvider name="nombre" rules="required|alpha_spaces" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16 border-0">
@@ -21,9 +19,7 @@
           </ValidationProvider>
         </div>
         <div> <!-- lastName -->
-          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">
-            Apellidos
-          </label>
+          <label class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Apellidos</label>
           <ValidationProvider name="apellidos" rules="required|alpha_spaces" v-slot="{ errors }">
             <span class="flex items-center leading-extra-snug border-0 text-3xl text-gray-600 focus-within:outline-none focus-within:ring focus-within:ring-indigo-100 focus-within:border-indigo-300">
               <div class="bg-orange w-16">

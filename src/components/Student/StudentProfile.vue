@@ -61,23 +61,21 @@
             />
           </span>
         </div>
+
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Reportes generales</p>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
           
           <div v-for="(area, index) of areas" v-bind:key="area.id">
-            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+            <div class="mx-5 mt-3 text-xl font-medium bg-opacity-50 hover:bg-opacity-100 duration-300 p-3 rounded-lg rounded-b-none flex justify-between" :class="['bg-' + colors[area.id - 1] ]">
               {{ area.name }}
               <button @click="changeGeneralReportsAccordionStatus(index)" :hidden="!area.openGeneralReport"><i class="fas fa-chevron-up"></i></button>
               <button @click="changeGeneralReportsAccordionStatus(index)" :hidden="area.openGeneralReport"><i class="fas fa-chevron-down"></i></button>
             </div>
 
-            <div v-show="area.openGeneralReport" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
-              <template v-if="area.generalReportData < 1">
-                No hay reporte general de esta área
-              </template>
+            <div v-show="area.openGeneralReport" class="mx-5 bg-opacity-25 p-3 pt-1 rounded-b-lg" :class="`bg-${colors[area.id-1]}`">
+              <template v-if="area.generalReportData < 1">No hay reporte general de esta área </template>
               <template v-else>
                 <line-chart v-if="area.generalReportLoaded" :chartdata="area.generalReport" :options="options"></line-chart>
               </template>
@@ -89,15 +87,15 @@
         <div class="flex items-center justify-between border-b-2 border-dashed m-1 border-orange-light">
           <p class="text-md py-2 ml-3">Reportes thunder-test</p>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
+
           <div v-for="(area, index) of areas" v-bind:key="area.id">
-            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+            <div class="mx-5 mt-3 text-xl font-medium bg-opacity-50 hover:bg-opacity-100 duration-300 p-3 rounded-lg rounded-b-none flex justify-between" :class="['bg-' + colors[area.id - 1] ]">
               {{ area.name }}
               <button @click="changeReportsAccordionStatus(index)" :hidden="!area.openReport"><i class="fas fa-chevron-up"></i></button>
               <button @click="changeReportsAccordionStatus(index)" :hidden="area.openReport"><i class="fas fa-chevron-down"></i></button>
             </div>
-            <div v-show="area.openReport" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
+            <div v-show="area.openReport" class="mx-5 p-3 pt-1 rounded-b-lg" :class="`bg-opacity-25 bg-${colors[area.id-1]}`">
               <template v-if="area.report.thunderTestQuantity < 1">
                 No hay reportes de esta área. Realice evaluaciones para obtener reportes.
               </template>
@@ -143,15 +141,13 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 mb-5">
           <div v-for="(area, index) of areas" v-bind:key="area.id">
-            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+            <div class="mx-5 mt-3 text-xl font-medium bg-opacity-50 hover:bg-opacity-100 duration-300 p-3 rounded-lg rounded-b-none flex justify-between" :class="['bg-' + colors[area.id - 1] ]">
               {{ area.name }}
               <button @click="changeAccordionStatus(index)" :hidden="!area.open"><i class="fas fa-chevron-up"></i></button>
               <button @click="changeAccordionStatus(index)" :hidden="area.open"><i class="fas fa-chevron-down"></i></button>
             </div>
-            <div v-show="area.open" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
-              <template v-if="area.exams.length < 1">
-                No hay exámenes de esta área
-              </template>
+            <div v-show="area.open" class="mx-5 p-3 pt-1 rounded-b-lg"  :class="`bg-opacity-25 bg-${colors[area.id-1]}`">
+              <template v-if="area.exams.length < 1"> No hay exámenes de esta área</template>
               <div v-else class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block hover:bg-gray-400 my-auto" v-for="exam of area.exams" :key="exam.id">
                 <div class="text-left mx-3"><!--<i class="fas fa-stream"></i> lectura-->
                   <i class="fas fa-calculator"></i> <!--matemática--><!--<i class="fas fa-coins"></i> finanzas<i class="fas fa-atom"></i>ciencia-->
@@ -176,6 +172,8 @@ import ExamService from "@/services/ExamService";
 import ReportService from "@/services/ReportService";
 import RadialProgressBar from "vue-radial-progress";
 import LineChart from "@/utils/LineChart";
+
+import { colors } from '@/utils/colors.json'
 
 export default {
   name: "StudentProfile",
@@ -228,8 +226,10 @@ export default {
       }).catch(() => this.$swal('Error', 'El servicio no está disponible', 'error'));
     },
     getAreas() {
-      ExamService.getAreas().then((response) => {
+      ExamService.getAreas().then(response => {
+
         if (response.status === 200) {
+          response.data.sort( (a,b) => a.id - b.id );
           response.data.forEach(f => {
             f.open = false;
             f.openReport = false;
@@ -268,11 +268,11 @@ export default {
         ReportService.getGeneralReportByStudentIdAndAreaId(this.$store.getters.getUserId, area.id).then((response) => {
           if (response.status === 200) {
             area.generalReport = {
-              labels: Array.from(Array(response.data.length).keys(), i => i + 2),
+              labels: Array.from(Array(response.data.length).keys(), i => ++i),
               datasets: [
                 {
                   label: 'Evolución de rendimiento',
-                  backgroundColor: '#663300',
+                  backgroundColor: ['#27e','#2e2','#ed2','#e62'][area.id - 1],
                   data: response.data.map(a => a.percentage)
                 }
               ]
@@ -311,9 +311,8 @@ export default {
     })
   },
   computed: {
-    fullName: function () {
-      return this.student.firstName + ' ' + this.student.lastName;
-    }
+    fullName: function () { return this.student.firstName + ' ' + this.student.lastName; },
+    colors : () => colors,
   }
 }
 </script>

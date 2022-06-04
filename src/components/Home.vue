@@ -2,7 +2,7 @@
   <div class="flex items-center min-h-screen bg-gray-100">
     <div class="container mx-auto">
       <div class="max-w-sm mx-auto my-10 bg-white border-2 border-orange shadow-2xl">
-        <img src="http://atrilco.com/wp-content/uploads/2017/11/ef3-placeholder-image.jpg" width="250px" height="100px">
+        <img src="../assets/isotipo.svg" width="144px" class="m-auto p-4">
         <div class="text-center py-2 text-black-400 bg-orange">
           Bienvenido
         </div>

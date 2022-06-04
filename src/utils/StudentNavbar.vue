@@ -15,18 +15,24 @@
           <span class="mx-2">{{ name }}</span>
         </button>
       </div>
-      <div class="hidden md:block md:flex md:justify-between md:bg-transparent">
+      <!--div class="hidden md:block md:flex md:justify-between md:bg-transparent">
         <button class="flex items-center p-3 font-medium mr-2 text-center bg-orange rounded hover:bg-white focus:outline-none focus:bg-white">
           <span><i class="fas fa-cog"></i></span>
         </button>
-      </div>
+      </div-->
       <div class="hidden md:block md:flex md:justify-between md:bg-transparent">
         <button @click="signOut" class="flex items-center p-3 font-medium mr-2 text-center bg-orange rounded hover:bg-white focus:outline-none focus:bg-white">
           <i class="fas fa-power-off"></i>
         </button>
       </div>
     </div>
-    <transition enter-class="opacity-0" enter-active-class="ease-out transition-medium" enter-to-class="opacity-100" leave-class="opacity-100" leave-active-class="ease-out transition-medium" leave-to-class="opacity-0">
+    <transition 
+      enter-class="opacity-0" 
+      enter-active-class="ease-out transition-medium" 
+      enter-to-class="opacity-100" 
+      leave-class="opacity-100" 
+      leave-active-class="ease-out transition-medium"
+      leave-to-class="opacity-0">
       <div @keydown.esc="isOpen = false" v-show="isOpen" class="z-10 fixed inset-0 transition-opacity">
         <div @click="isOpen = false" class="absolute inset-0 bg-black opacity-50" tabindex="0"></div>
       </div>
@@ -62,12 +68,12 @@
         </span>
         <span>Test relámpago</span>
       </span>
-      <span @click="isOpen = false" class="flex items-center p-4 md:hidden block hover:bg-white">
+      <!--span @click="isOpen = false" class="flex items-center p-4 md:hidden block hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-cog"></i>
         </span>
         <span>Configuración</span>
-      </span>
+      </span-->
       <span @click="signOut" class="flex items-center cursor-pointer p-4 md:hidden block hover:bg-white">
         <span class="mr-2">
           <i class="fas fa-power-off"></i>

@@ -20,9 +20,7 @@ import './registerServiceWorker'
 Vue.config.productionTip = false
 
 // SweetAlert2 Options
-const options = {
-  confirmButtonColor: '#FF8844',
-};
+const options = { confirmButtonColor: '#FF8844', };
 
 // VeeValidate
 Vue.component('ValidationProvider', ValidationProvider);
@@ -35,6 +33,7 @@ extend('confirmed', confirmed);
 extend('min', min);
 extend('alpha', alpha);
 extend('required_if', required_if);
+//...
 extend('max', max);
 extend('alpha_spaces', alpha_spaces);
 extend('min_value', min_value);
@@ -51,6 +50,4 @@ Vue.use(VueAxios, axios);
 Vue.use(VueSweetalert2, options);
 Vue.component("vue-pdf-app", VuePdfApp);
 Vue.component(VueCountdown.name, VueCountdown);
-Vue.use(require('vue-moment'), {
-  moment
-});
+Vue.use(require('vue-moment'), { moment });

@@ -26,7 +26,8 @@
     "vue-radial-progress": "^0.3.2",
     "vue-router": "^3.5.2",
     "vue-sweetalert2": "^5.0.2",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

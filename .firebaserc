@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "masteri1"
+  },
+  "targets": {
+    "masteri1": {
+      "hosting": {
+        "fe2": [
+          "masteri1-admin"
+        ],
+        "fe1": [
+          "masteri1"
+        ]
+      }
+    }
   }
 }

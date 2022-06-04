@@ -52,13 +52,14 @@
           <p class="text-md py-2 ml-3">Aulas asignadas a usted</p>
         </div>
         <div class="grid grid-cols-3 md:grid-cols-5">
-          <div class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto" v-for="classroom of classrooms" v-bind:key="classroom.id" @click="goToClassroomProfile(classroom.id)">
-            <div class="w-full text-center">
-              <i class="fas fa-landmark"></i>
+          <template v-if="classrooms.length > 0">
+            <div class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto" v-for="classroom of classrooms" v-bind:key="classroom.id" @click="goToClassroomProfile(classroom.id)">
+              <div class="w-full text-center"><i class="fas fa-landmark"></i></div>
+              <div class="w-full text-center" v-text="classroom.name"></div>
             </div>
-            <div class="w-full text-center">
-              {{ classroom.name }}
-            </div>
+          </template>
+          <div v-else>
+            no tiene aulas asignadas a usted aún
           </div>
         </div>
       </div>

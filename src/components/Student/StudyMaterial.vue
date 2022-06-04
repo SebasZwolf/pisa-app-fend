@@ -21,6 +21,8 @@
 import StudentNavbar from "@/utils/StudentNavbar";
 import ExamService from "@/services/ExamService";
 
+import { colors } from "@/utils/colors.json"
+
 export default {
   name: "StudyMaterial",
   components: { StudentNavbar },
@@ -28,7 +30,7 @@ export default {
     areas: []
   }),
   computed : {
-    colors : () => ['blue-500','green-400','yellow-200','yellow-400'],
+    colors : () => colors,
   },
   created() {
     this.$store.dispatch('setToken');

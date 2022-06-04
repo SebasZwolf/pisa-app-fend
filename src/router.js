@@ -49,11 +49,11 @@ const routes = [
     // Study material
     { path: "/study-material", name: 'study-material', component: StudyMaterial },
     { path: "/study-material/:areaId", name: 'course-material', component: CourseMaterial, props: true },
-    { path: "/study-material/:areaId/topic", name: 'topic-material', component: TopicMaterial, props: true },
+    { path: "/study-material/:areaId/topic", name: 'topic-material', beforeEnter : (to, from, next) => { console.log(to.params); if(!to.params.topic) next({ name : 'study-material'}); else next();  }, component: TopicMaterial, props: true },
     // Study material teacher
-    { path: "/study-material", name: 'study-material-teacher', component: ()=>import("@/components/Teacher/StudyMaterial") },
-    { path: "/study-material/:areaId", name: 'course-material-teacher', component: ()=>import("@/components/Teacher/CourseMaterial"), props: true },
-    { path: "/study-material/:areaId/topic", name: 'topic-material-teacher', component: ()=>import("@/components/Teacher/TopicMaterial"), props: true },
+    { path: "/t-study-material", name: 'study-material-teacher', component: ()=>import("@/components/Teacher/StudyMaterial") },
+    { path: "/t-study-material/:areaId", name: 'course-material-teacher', component: ()=>import("@/components/Teacher/CourseMaterial"), props: true },
+    { path: "/t-study-material/:areaId/topic", name: 'topic-material-teacher', beforeEnter : (to, from, next) => { console.log(to.params); if(!to.params.topic) next({ name : 'study-material-teacher'}); else next();  }, component: ()=>import("@/components/Teacher/TopicMaterial"), props: true },
     //
     { path: "/student/:sid/profile", name:'one-student-profile', component: SharedStudentProfile, props: true }
 ]

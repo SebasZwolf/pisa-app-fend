@@ -37,9 +37,10 @@
         </div>
         <div class="flex items-center justify-between border-b-2 border-dashed mx-1 my-3 border-orange-light">
           <p class="text-md py-2 ml-3">Evaluaciones</p>
-          <button @click="addEvaluation" class="text-right font-extrabold text-xl mr-5 rounded px-1.5 hover:bg-orange-light">+</button>
+          <button @click="addEvaluation" class="text-right font-bold text-sm mr-5 rounded px-1.5 hover:bg-orange-light">Agregar Evaluación</button>
         </div>
-        <div>
+
+        <div v-if="exams.length > 0">
           <div class="flex justify-between ml-3 mr-2 py-2 my-1.5 bg-gray-300 block cursor-pointer hover:bg-gray-400 my-auto" v-for="exam of exams" :key="exam.id">
             <div class="text-left mx-3">
               <!--  <i class="fas fa-stream"></i> --> <!-- lectura -->
@@ -53,24 +54,32 @@
             </div>
           </div>
         </div>
+        <div v-else>
+          no hay evaluaciones registradas en este aula aún
+        </div>
+
         <div class="flex items-center justify-between border-b-2 border-dashed mx-1 my-3 border-orange-light">
           <p class="text-md py-2 ml-3">Alumnos del aula</p>
         </div>
+        <template v-if="students.length > 0">
+          <div class="mx-4">
+            <input class="py-0" type="text" name="" id="" placeholder="filtre por nombre" pattern="^[a-zA-Z ]{0,}$"
+            @input="filterStudents($event.target.value)">
+          </div>
 
-        <div class="mx-4">
-          <input class="py-0" type="text" name="" id="" placeholder="filtre por nombre" pattern="^[a-zA-Z ]{0,}$"
-          @input="filterStudents($event.target.value)">
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3">
-          <button
-            class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto"
-            v-for="student of students_filtered" :key="student.id"
-            @click="$router.push({ name : 'one-student-profile', params : { sid : student.id }})">
-            <div class="w-full text-center">
-              {{ student.firstName }} {{ student.lastName }}
-            </div>
-          </button>
+          <div class="grid grid-cols-1 md:grid-cols-3">
+            <button
+              class="ml-3 mr-2 py-2 my-1.5 bg-gray-300 cursor-pointer hover:bg-gray-400 my-auto"
+              v-for="student of students_filtered" :key="student.id"
+              @click="$router.push({ name : 'one-student-profile', params : { sid : student.id }})">
+              <div class="w-full text-center">
+                {{ student.firstName }} {{ student.lastName }}
+              </div>
+            </button>
+          </div>
+        </template>
+        <div v-else>
+          no hay alumnos registrados en este aula
         </div>
 
         <div class="flex items-center justify-between border-b-2 border-dashed mx-1 my-3 border-orange-light">
@@ -82,13 +91,13 @@
         <button v-if="!showingReports" @click="GenerarReporte" style="display: block;" class="mx-auto px-6 py-2 bg-orange-light border-2 border-solid border-orange-dark cursor-pointer" >Generar</button>
         <div v-else class="grid grid-cols-1 md:grid-cols-1 mb-5">
           <div v-for="(area, index) of areas" v-bind:key="index">
-            <div class="mx-5 mt-3 text-xl font-medium bg-orange-light hover:bg-orange bg-opacity-50 duration-300 p-3 rounded-lg rounded-b-none flex justify-between">
+            <div class="mx-5 mt-3 text-xl font-medium hover:bg-opacity-100 duration-300 p-3 rounded-lg rounded-b-none flex justify-between" :class="`bg-opacity-50 bg-${colors[index]}`">
               {{ area.name }}
               <button @click="AreaReportChange(index)" :hidden="!area.open"><i class="fas fa-chevron-up"></i></button>
               <button @click="AreaReportChange(index)" :hidden="area.open"><i class="fas fa-chevron-down"></i></button>
             </div>
 
-            <div v-show="area.open" class="mx-5 bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg">
+            <div v-show="area.open" class="mx-5 p-3 pt-1 rounded-b-lg"  :class="`bg-opacity-25 bg-${colors[index]}`">
               <template v-if="area.reporte == null">
                 No hay reportes de esta área. Realice evaluaciones para obtener reportes.
               </template>
@@ -121,7 +130,7 @@
                   </div>
 
                   <div class="my-2 ">
-                    <div class="bg-orange-light bg-opacity-50 p-3 pt-1 rounded-b-lg ">
+                    <div class="p-3 pt-1">
                       <line-chart v-if="area.reporte != null" :chartdata="area.reporte" :options="options"></line-chart>
                     </div>
                   </div>
@@ -150,6 +159,8 @@ import StudentService     from "@/services/StudentService";
 import RadialProgressBar  from "vue-radial-progress";
 import ReportService      from "@/services/ReportService";
 import LineChart from "@/utils/LineChart";
+
+import { colors } from '@/utils/colors.json'
 
 const helpers = {
   filter_update : 0,
@@ -182,7 +193,12 @@ export default {
       aspectRatio: 1,
       scales: {
         xAxes: [{
-          gridLines: { display: false }
+          gridLines: { display: false },
+          ticks : {
+            autoSkip: false,
+            maxRotation: 45,
+            minRotation: 45
+          }
         }],
         yAxes: [{
           ticks: {
@@ -193,7 +209,7 @@ export default {
     }
   }),
   computed : {
-    //options : () => (),
+    colors : () => colors,
   },
   methods: {
     searchForStudents( d ){
@@ -232,25 +248,30 @@ export default {
         preConfirm : () =>{
           ReportService.getGeneralReportByClassroomId(this.id).then( response => {
             if (response.status !== 200) this.$swal.showValidationMessage("Error al generar reporte");
-            if ( response.data.includes(null))
+
+            if (response.data.every( r => r === null))
+              this.$swal('Falló', 'no se han generado reportes debido a que no hay registros de evaluaciones', 'warning');
+            else if ( response.data.includes(null))
               this.$swal('Éxito', 'se han generado reportes; sin embargo, puede que algunos esten vacios por falta de registros', 'success');
             else
               this.$swal('Éxito', 'se han generado reportes', 'success');
             
+            //console.log(response.data);
             for( const el of response.data) {
               if (el === null) continue;
 
+              console.log(el);
               this.areas[el.areaId - 1].score = el.score;
               this.areas[el.areaId - 1].score_objective = el.score_objective;
               this.areas[el.areaId - 1].msg = el.details;
               
               this.areas[el.areaId - 1].reporte = {
-                labels: Array.from(Array(el.grades.length).keys(), i => i + 1),
+                labels: el.dates.map( d => d.split('T')[0]),
                 datasets : [
                   {
                     label: 'Evolución de rendimiento',
-                    backgroundColor: '#663300',
-                    data: el.grades,
+                    backgroundColor: ['#27e','#2e2','#ed2','#e62'][el.areaId - 1],
+                    data: el.grades.map( g => g.toFixed(2)),
                   }
                 ]
               };
